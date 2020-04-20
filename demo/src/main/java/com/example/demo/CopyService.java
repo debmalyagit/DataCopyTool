@@ -2,6 +2,8 @@ package com.example.demo;
 
 import com.example.model.*;
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -11,8 +13,11 @@ import java.util.*;
 @Component
 public class CopyService {
 
-    String excelFilePath = "E:\\Git\\Job_Details.xlsx";
+    String excelFilePath = "E:\\Git\\DataCopyTool\\Job_Details.xlsx";
     Workbook wb;
+
+    @Autowired
+    private Environment env;
 
     public Integer writeToFile(String fromDB, String fromSchName, String toDB, String toSchName, String tableName, String copyType){
         int jobId=0;
@@ -57,23 +62,23 @@ public class CopyService {
         Process p = null;
         ProcessBuilder builder1 = null;
         if(copyType.equalsIgnoreCase("TC")){
-            builder1 = new ProcessBuilder("D:\\app\\Vishakha\\product\\11.2.0\\dbhome_1\\BIN\\exp",
+            builder1 = new ProcessBuilder(env.getProperty("ORACLE_HOME") + "\\BIN\\exp",
                     user+"/"+user+"@"+fromDb, "tables="+tableName, "file="+jobId+".dmp", "direct=y", "log="+jobId+"_export.txt");
         }else if(copyType.equalsIgnoreCase("PC")){
-            builder1 = new ProcessBuilder("D:\\app\\Vishakha\\product\\11.2.0\\dbhome_1\\BIN\\exp",
+            builder1 = new ProcessBuilder(env.getProperty("ORACLE_HOME") + "\\BIN\\exp",
                     user+"/"+user+"@"+fromDb, "tables="+tableName+":"+partition, "file="+jobId+".dmp", "direct=y", "log="+jobId+"_export.txt");
         }else if(copyType.equalsIgnoreCase("CC")){
-            Formatter x= new Formatter("D:\\Vishakha\\Files\\copy.par");
+            Formatter x= new Formatter("E:\\Git\\DataCopyTool\\copy.par");
             x.format("tables="+tableName);
             x.format(" file="+jobId+".dmp");
             x.format(" log="+jobId+"_export.txt");
             x.format(" query="+textArea);
             x.close();
-            builder1 = new ProcessBuilder("D:\\app\\Vishakha\\product\\11.2.0\\dbhome_1\\BIN\\exp",
+            builder1 = new ProcessBuilder(env.getProperty("ORACLE_HOME") + "\\BIN\\exp",
                     user+"/"+user+"@"+fromDb, "parfile=copy.par");
         }
-        builder1.directory(new File("D:\\Vishakha\\Files\\"));
-        builder1.environment().put("ORACLE_HOME", "D:\\app\\Vishakha\\product\\11.2.0\\dbhome_1");
+        builder1.directory(new File("E:\\Git\\DataCopyTool\\"));
+        builder1.environment().put("ORACLE_HOME", env.getProperty("ORACLE_HOME") );
         builder1.environment().put("PATH", "%ORACLE_HOME%\\BIN;%PATH%");
 
         builder1.redirectErrorStream(true);
@@ -113,10 +118,10 @@ public class CopyService {
             Cell cell3 = firstSheet.getRow(jobId).getCell(11);
             Cell cell = firstSheet.getRow(jobId).getCell(9);
             Process p = null;
-            ProcessBuilder builder1 = new ProcessBuilder("D:\\app\\Vishakha\\product\\11.2.0\\dbhome_1\\BIN\\imp", toSch+"/"+toSch+"@"+toDB, "file="+jobId+".dmp",
+            ProcessBuilder builder1 = new ProcessBuilder(env.getProperty("ORACLE_HOME") + "\\BIN\\imp", toSch+"/"+toSch+"@"+toDB, "file="+jobId+".dmp",
                     "full=y", "log="+jobId+"_import.txt", "ignore=y");
-            builder1.directory(new File("D:\\Vishakha\\Files\\"));
-            builder1.environment().put("ORACLE_HOME", "D:\\app\\Vishakha\\product\\11.2.0\\dbhome_1");
+            builder1.directory(new File("E:\\Git\\DataCopyTool\\"));
+            builder1.environment().put("ORACLE_HOME", env.getProperty("ORACLE_HOME"));
             builder1.environment().put("PATH", "%ORACLE_HOME%\\BIN;%PATH%");
             builder1.redirectErrorStream(true);
             p = builder1.start();
