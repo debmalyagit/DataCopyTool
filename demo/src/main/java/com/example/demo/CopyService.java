@@ -1,6 +1,6 @@
 package com.example.demo;
 
-import model.JobDetails;
+import com.example.model.*;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +11,7 @@ import java.util.*;
 @Component
 public class CopyService {
 
-    String excelFilePath = "D:\\Vishakha\\Job_Details.xlsx";
+    String excelFilePath = "E:\\Git\\Job_Details.xlsx";
     Workbook wb;
 
     public Integer writeToFile(String fromDB, String fromSchName, String toDB, String toSchName, String tableName, String copyType){

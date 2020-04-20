@@ -1,6 +1,6 @@
 package com.example.demo;
 
-import model.JobDetails;
+import com.example.model.JobDetails;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

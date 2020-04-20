@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.model.JobDetails;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -25,7 +26,7 @@ public class DemoApplicationTests {
 	@Autowired
 	private CopyService copyService;
 
-	String excelFilePath = "D:\\Vishakha\\Job_Details.xlsx";
+	String excelFilePath = "E:\\Git\\DataCopyTool\\Job_Details.xlsx";
 	Workbook wb;
 
 	@Test
@@ -43,7 +44,7 @@ public class DemoApplicationTests {
 
 	@Test(expected = FileNotFoundException.class)
 	public void negativeWriteToFileTest() throws IOException {
-		wb = WorkbookFactory.create(new FileInputStream("C:\\Files.xlsx"));
+		wb = WorkbookFactory.create(new FileInputStream("E:\\Git\\DataCopyTool\\Files.xlsx"));
 		Sheet sheet = wb.getSheetAt(0);
 		int originalCount=sheet.getLastRowNum();
 		//copyService.export("trd","trd","iedb_uat", "trades", 20, "TC", "", "");
@@ -55,13 +56,13 @@ public class DemoApplicationTests {
 
 	@Test
 	public void positiveReadFromFileTest() throws ParseException {
-		model.JobDetails jobDetails = (model.JobDetails) copyService.readFromFile();
+		JobDetails jobDetails = (JobDetails) copyService.readFromFile();
 		assertNotNull(jobDetails);
 	}
 
 	@Test(expected = FileNotFoundException.class)
 	public void negativeReadFromFileTest() throws IOException, ParseException {
-		wb = WorkbookFactory.create(new FileInputStream("C:\\Files.xlsx"));
+		wb = WorkbookFactory.create(new FileInputStream("E:\\Git\\DataCopyTool\\Files.xlsx"));
 		copyService.readFromFile();
 	}
 }
