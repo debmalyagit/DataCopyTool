@@ -13,7 +13,7 @@
     <title>Data Copy Tool!</title>
 
   </head>
-  <body>
+  <body onload="loadOptions()">
 
               <!--  -->
               <div class="header">
@@ -76,9 +76,9 @@
                                 <td>
                                   <select id="fDBName" class="DBdropdown">
                                     <option value="">---Select---</option>
-                                    <option value="IEDB_UAT">IEDB_UAT</option>
+                             <!--       <option value="IEDB_UAT">IEDB_UAT</option>
                                     <option value="IEDB_DEV">IEDB_DEV</option>
-
+                                -->
                                   </select>
                                 </td>
                                 <td></td>
@@ -87,21 +87,17 @@
                                   <td>
                                     <select id="tDBName" class="DBdropdown">
                                       <option value="">---Select---</option>
-                                      <option value="IEDB_UAT">IEDB_UAT</option>
+                                    <!--  <option value="IEDB_UAT">IEDB_UAT</option>
                                       <option value="IEDB_DEV">IEDB_DEV</option>
-
+                                      -->  
                                     </select>
                                   </td>
                               </tr>
                               <tr>
                                 <td scope="row">Schema Name</td>
                                 <td>
-                                  <select id="fSName" class="DBdropdown">
-                                    <option value="">---Select---</option>
-                                    <option value="trd">TRD</option>
-                                    <option value="covid">COVID</option>
-                                    <option value="hack">HACK</option>
-
+                                  <select id="fSName" class="DBdropdown1" > 
+                                    <option value="">---Select---</option>                                    
                                   </select>
                                 </td>
                                 <td></td>
@@ -110,10 +106,10 @@
                                   <td>
                                     <select id="tSName" class="DBdropdown">
                                       <option value="">---Select---</option>
-                                    <option value="trd">TRD</option>
+                               <!--     <option value="trd">TRD</option>
                                     <option value="covid">COVID</option>
                                     <option value="hack">HACK</option>
-
+                               -->
                                     </select>
                                   </td>
                               </tr>

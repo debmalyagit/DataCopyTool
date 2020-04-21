@@ -9,7 +9,18 @@ var gtPWD;
 var gtDB;
 
 $(document).ready(function(){
-
+    console.log('document is loaded');
+    
+  /*
+     $("#fSName").change(function(){
+        var selectedSchema = $(this).children("option:selected").val();
+        alert("You Selected: "+ selectedSchema);
+     });
+     $("#tSName").change(function(){
+        var selectedSchema1 = $(this).children("option:selected").val();
+        alert("You Selected: "+ selectedSchema1);
+     });
+*/
     $('#headingTwo').click(function(){
         $('#collapseTwo').toggle();
     });
@@ -43,8 +54,25 @@ $(document).ready(function(){
         var fDBName=$('#fDBName').val();
 
         if(validateF(fDBName,fSName,pwd)){
+            var fromDat ="\"usr=" + fSName + "&pass=" + pwd + "&dbn=" + fDBName + "\"";
+            console.log(fromDat);
+            $.ajax({
+                type: 'POST',
+                url: '/authDB',
+                data: fromDat,
+                dataType : 'text',
+                contentType: 'application/json',
+                success : function(data, textStatus, jqXHR){
+                   console.log(data);
 
-            if(pwd=='abc12345'){
+                   fAuthFlag==true;
+                   tAuthFlag==true
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    alert("DB Authentication Failed!");}    
+               }) ;
+
+/*            if(pwd=='abc12345'){
 
                 fAuthFlag=true;
                 gfSName=fSName;
@@ -55,7 +83,7 @@ $(document).ready(function(){
             } else{
                 alert('Please enter correct credentials!!');
             }
-
+*/
             if(fAuthFlag==true && tAuthFlag==true){
 
                 $('#collapseOne').hide();
@@ -228,5 +256,80 @@ function validateF(fDBName,fSName,pwd){
         return false;
     }
     return true;
+
+}
+
+function loadOptions(){
+        console.log('fsname drop down');
+        $('#fSName').empty();
+        $.ajax({
+         type: 'GET',
+         url: '/getSchName',
+         //contentType: 'application/json',
+         success : function(data){
+             console.log(data);
+            // var res = $.parseJSON(data);             
+            $('#fSName').append("<option value='' selected>--Select--</option>");
+             $.each(data, function(index, value){
+                 console.log(value);
+                 $('#fSName').append("<option value='" + value + "'>"+value+"</option>");
+             });
+         },
+         error: function(){alert("fSName: Option details not avaialble!");}    
+        }) ;
+
+        console.log('tSName drop down');
+        $('#tSName').empty();
+        $.ajax({
+         type: 'GET',
+         url: '/getSchName',
+         //contentType: 'application/json',
+         success : function(data){
+             console.log(data);
+            // var res = $.parseJSON(data);             
+            $('#tSName').append("<option value='' selected>--Select--</option>");
+             $.each(data, function(index, value){
+                 console.log(value);
+                 $('#tSName').append("<option value='" + value + "'>"+value+"</option>");
+             });
+         },
+         error: function(){alert("tSName: Option details not avaialble!");}    
+        }) ;
+
+        console.log('fDBName drop down');
+        $('#fDBName').empty();
+        $.ajax({
+         type: 'GET',
+         url: '/getSrcDBName',
+         //contentType: 'application/json',
+         success : function(data){
+             console.log(data);
+            // var res = $.parseJSON(data);             
+            $('#fDBName').append("<option value='' selected>--Select--</option>");
+             $.each(data, function(index, value){
+                 console.log(value);
+                 $('#fDBName').append("<option value='" + value + "'>"+value+"</option>");
+             });
+         },
+         error: function(){alert("fDBName: Option details not avaialble!");}    
+        }) ;
+
+        console.log('tDBName drop down');
+        $('#tDBName').empty();
+        $.ajax({
+         type: 'GET',
+         url: '/getSrcDBName',
+         //contentType: 'application/json',
+         success : function(data){
+             console.log(data);
+            // var res = $.parseJSON(data);             
+            $('#tDBName').append("<option value='' selected>--Select--</option>");
+             $.each(data, function(index, value){
+                 console.log(value);
+                 $('#tDBName').append("<option value='" + value + "'>"+value+"</option>");
+             });
+         },
+         error: function(){alert("tDBName: Option details not avaialble!");}    
+        }) ;
 
 }
