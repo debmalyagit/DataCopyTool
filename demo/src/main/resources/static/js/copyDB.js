@@ -11,16 +11,6 @@ var gtDB;
 $(document).ready(function(){
     console.log('document is loaded');
     
-  /*
-     $("#fSName").change(function(){
-        var selectedSchema = $(this).children("option:selected").val();
-        alert("You Selected: "+ selectedSchema);
-     });
-     $("#tSName").change(function(){
-        var selectedSchema1 = $(this).children("option:selected").val();
-        alert("You Selected: "+ selectedSchema1);
-     });
-*/
     $('#headingTwo').click(function(){
         $('#collapseTwo').toggle();
     });
@@ -54,50 +44,43 @@ $(document).ready(function(){
         var fDBName=$('#fDBName').val();
 
         if(validateF(fDBName,fSName,pwd)){
-            var fromDat ="\"usr=" + fSName + "&pass=" + pwd + "&dbn=" + fDBName + "\"";
-            console.log(fromDat);
-            $.ajax({
-                type: 'POST',
-                url: '/authDB',
-                data: fromDat,
-                dataType : 'text',
-                contentType: 'application/json',
-                success : function(data, textStatus, jqXHR){
-                   console.log(data);
-
-                   fAuthFlag==true;
-                   tAuthFlag==true
-                },
-                error: function(jqXHR, textStatus, errorThrown){
-                    alert("DB Authentication Failed!");}    
-               }) ;
-
-/*            if(pwd=='abc12345'){
-
-                fAuthFlag=true;
-                gfSName=fSName;
-                gfPWD=pwd;
-                gfDB=fDBName;
-                alert('Successfully Validated!');
-
-            } else{
-                alert('Please enter correct credentials!!');
-            }
-*/
-            if(fAuthFlag==true && tAuthFlag==true){
-
+            
+            console.log({usr:fSName,pass:pwd,dbn:fDBName});
+            $.post('http://localhost:8080/authDB',{usr:fSName,pass:pwd,dbn:fDBName})
+            .done(function(response){
+                console.log(response);
+                                              
+                if (response == "false"){
+                    //alert("Better luck next time!");                                        
+                    alert("Source DB: Better luck next time!");
+                }
+                else {
+                    fAuthFlag= true;      
+                    if (fAuthFlag) {
+                        console.log("line: 60 fAuthFlag is True");
+                    }             
+                    alert("Welcome! You are authenticated to Source DB.");
+                }
+            })
+            .fail( function(xhr, textStatus, errorThrown) {
+                alert(xhr.responseText);
+            });
+            console.log("Checking at line 65");
+            if(fAuthFlag && tAuthFlag){
+                console.log("Checking at line 67");
                 $('#collapseOne').hide();
 
 
             }
-            if(fAuthFlag==true && tAuthFlag==true){
 
+            if(fAuthFlag && tAuthFlag){
+                console.log("Checking at line 84");
+                $('#collapseOne').hide();
                 $('#part').hide();
                 $('#Qry').hide();
                 $('#collapseTwo').show();
 
             }
-
             document.getElementById("fPWD").value='';
         }
 
@@ -110,20 +93,33 @@ $(document).ready(function(){
         var tDBName=$('#tDBName').val();
 
         if(validateF(tDBName,tSName,pwd)){
-
-            if(pwd=='abc12345'){
-
-                tAuthFlag=true;
-                gtSName=tSName;
-                gtPWD=pwd;
-                gtDB=tDBName;
-                alert('Successfully Validated!');
-            }
-            else{
-                alert('Please enter correct credentials!!');
-            }
-            if(fAuthFlag==true && tAuthFlag==true){
-
+            console.log({usr:tSName,pass:pwd,dbn:tDBName});
+            $.post('http://localhost:8080/authDB',{usr:tSName,pass:pwd,dbn:tDBName})
+            .done(function(response){
+                console.log(response);
+                               
+                if (response == "false"){
+                    //alert("Better luck next time!");                                        
+                     alert("Better luck next time!");
+                }
+                else {                    
+                    tAuthFlag= true;
+                    if (fAuthFlag) {
+                        console.log("line: 108 fAuthFlag is True");
+                    }   
+                    if (tAuthFlag) {
+                        console.log("line: 111 tAuthFlag is True");
+                    }   
+                    alert("Welcome! You are authenticated to Target DB.");
+                }
+            })
+            .fail( function(xhr, textStatus, errorThrown) {
+                alert(xhr.responseText);
+            });    
+            
+            console.log("Checking at line 120");
+            if(fAuthFlag && tAuthFlag){
+                console.log("Checking at line 122");
                 $('#collapseOne').hide();
                 $('#part').hide();
                 $('#Qry').hide();
@@ -331,5 +327,5 @@ function loadOptions(){
          },
          error: function(){alert("tDBName: Option details not avaialble!");}    
         }) ;
-
+return true;
 }

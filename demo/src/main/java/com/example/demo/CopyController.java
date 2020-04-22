@@ -69,17 +69,24 @@ public class CopyController {
         }
     }
 
-    @PostMapping(path = "/authDB", consumes = "application/text")
+    @PostMapping(value = "/authDB")
     public ResponseEntity<String> authDB(@RequestParam("usr") String user, @RequestParam("pass") String pass,
-    @RequestParam("dbname") String dbn){
+    @RequestParam("dbn") String dbn){
         try{
             //The check DB  Authentication here.
-            System.out.println("DB Authentication!" + user + " " + pass + " " + dbn);
-            return ResponseEntity.status(HttpStatus.OK).body("true");
+            
+            if(user.isEmpty() || pass.isEmpty() || dbn.isEmpty()){
+                return ResponseEntity.status(HttpStatus.OK).body("false");                
+            }
+            if (pass.equals((user.toString() + "123"))){
+                return ResponseEntity.status(HttpStatus.OK).body("true");                
+            }
+            
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.OK).body(ExceptionUtils.getStackTrace(e));
         }
-
+        System.out.println("DB Authentication!" + user + " " + pass + " " + dbn + " " +  (user + "123"));
+        return ResponseEntity.status(HttpStatus.OK).body("false");
     }    
     @PostMapping(path = "/copyData", consumes = "application/json"/*, produces = "application/json"*/)
     public ResponseEntity<String> copy(@RequestBody JobDetails jobDetails){
