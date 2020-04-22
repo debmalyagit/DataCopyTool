@@ -10,6 +10,7 @@ var gtDB;
 
 $(document).ready(function(){
     console.log('document is loaded');
+       
     
     $('#headingTwo').click(function(){
         $('#collapseTwo').toggle();
@@ -42,6 +43,9 @@ $(document).ready(function(){
         var fSName= $('#fSName').val();
         var pwd=$('#fPWD').val();
         var fDBName=$('#fDBName').val();
+        gfSName = fSName;
+        gfPWD = pwd;
+        gfDB = fDBName;
 
         if(validateF(fDBName,fSName,pwd)){
             
@@ -61,26 +65,20 @@ $(document).ready(function(){
                     }             
                     alert("Welcome! You are authenticated to Source DB.");
                 }
+                console.log("Checking at line 64");
+            if(fAuthFlag && tAuthFlag){
+                console.log("Checking at line 66");
+                $('#collapseOne').hide();
+                $('#part').hide();
+                $('#Qry').hide();
+                $('#collapseTwo').show();                
+            }
+
             })
             .fail( function(xhr, textStatus, errorThrown) {
                 alert(xhr.responseText);
             });
-            console.log("Checking at line 65");
-            if(fAuthFlag && tAuthFlag){
-                console.log("Checking at line 67");
-                $('#collapseOne').hide();
-
-
-            }
-
-            if(fAuthFlag && tAuthFlag){
-                console.log("Checking at line 84");
-                $('#collapseOne').hide();
-                $('#part').hide();
-                $('#Qry').hide();
-                $('#collapseTwo').show();
-
-            }
+            
             document.getElementById("fPWD").value='';
         }
 
@@ -91,7 +89,9 @@ $(document).ready(function(){
         var tSName= $('#tSName').val();
         var pwd=$('#tPWD').val();
         var tDBName=$('#tDBName').val();
-
+        gtSName = tSName;
+        gtPWD = pwd;
+        gtDB = tDBName;
         if(validateF(tDBName,tSName,pwd)){
             console.log({usr:tSName,pass:pwd,dbn:tDBName});
             $.post('http://localhost:8080/authDB',{usr:tSName,pass:pwd,dbn:tDBName})
@@ -112,26 +112,54 @@ $(document).ready(function(){
                     }   
                     alert("Welcome! You are authenticated to Target DB.");
                 }
+                console.log("Checking at line 109");
+                if(fAuthFlag && tAuthFlag){
+                    console.log("Checking at line 111");
+                    $('#collapseOne').hide();
+                    $('#part').hide();
+                    $('#Qry').hide();
+                    $('#collapseTwo').show();
+            }
             })
             .fail( function(xhr, textStatus, errorThrown) {
                 alert(xhr.responseText);
             });    
             
-            console.log("Checking at line 120");
-            if(fAuthFlag && tAuthFlag){
-                console.log("Checking at line 122");
-                $('#collapseOne').hide();
-                $('#part').hide();
-                $('#Qry').hide();
-                $('#collapseTwo').show();
-
-            }
+            
             document.getElementById("tPWD").value='';
 
         }
 
     });
 
+    $('#collapseTwo').show(function(){
+        console.log('tableName drop down');
+        $('#tableName').empty();
+        $.ajax({
+         type: 'GET',
+         url: '/getTabName',
+         success : function(data){
+             console.log(data);
+                       
+            $('#tableName').append("<option value='' selected>--Select--</option>");
+             $.each(data, function(index, value){
+                 console.log(value);
+                 $('#tableName').append("<option value='" + value + "'>"+value+"</option>");
+             });
+         },
+         error: function(){alert("tableName: Option details not avaialble!");}    
+        }) ;
+
+
+    });
+
+    $('#copyType').click(function(){
+        loadPartition();
+    });
+
+    $('#tableName').click(function(){
+        loadPartition();
+    });
 
     $('#sub').click(function(){
 
@@ -139,7 +167,7 @@ $(document).ready(function(){
             var copyType= $('#copyType').val();
             var Textarea= $('#Textarea').val();
             var Partition= $('#Partition').val();
-
+            
 
 
             if(gfDB=='' || gfDB==undefined || gfSName=='' || gfSName==undefined|| gfPWD=='' || gfPWD==undefined){
@@ -257,6 +285,7 @@ function validateF(fDBName,fSName,pwd){
 
 function loadOptions(){
         console.log('fsname drop down');
+        $('#collapseTwo').hide();
         $('#fSName').empty();
         $.ajax({
          type: 'GET',
@@ -328,4 +357,31 @@ function loadOptions(){
          error: function(){alert("tDBName: Option details not avaialble!");}    
         }) ;
 return true;
+}
+
+function loadPartition(){
+    if ($('#copyType').val() == 'PC'){
+        console.log('Partition drop down');
+        $('#Partition').empty();
+        l_url = "/getPartName/" + $('#tableName').val();
+        console.log("The partion for url : " + l_url);    
+
+        $.ajax({
+        type: 'GET',
+        url: l_url,
+        //contentType: 'application/json',
+        success : function(data){
+            console.log(data);
+            // var res = $.parseJSON(data);             
+            $('#Partition').append("<option value='' selected>--Select--</option>");
+            $.each(data, function(index, value){
+                console.log(value);
+                $('#Partition').append("<option value='" + value + "'>"+value+"</option>");
+            });
+        },
+        error: function(){alert("Partition: Option details not avaialble!");}    
+        }) ;
+
+}
+
 }

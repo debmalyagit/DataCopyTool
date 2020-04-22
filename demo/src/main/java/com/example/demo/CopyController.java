@@ -58,6 +58,36 @@ public class CopyController {
         }
     }
 
+    @GetMapping(value="/getTabName", produces = "application/json")
+    public ResponseEntity<List<String>> getAllTables(){
+        List<String> tabList = new ArrayList<String>();
+        try{
+            tabList.add("Customers");
+            tabList.add("Trades");
+            tabList.add("Job_Details");
+            tabList.add("Transactions");
+            tabList.add("Trades_10m");
+            return ResponseEntity.status(HttpStatus.OK).body(tabList);
+        }catch(Exception e){
+            return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value="/getPartName/{table}", method = RequestMethod.GET)
+	public ResponseEntity<List<String>> getAllParts(@PathVariable("table") String table) {
+		List<String> partList = new ArrayList<String>();
+        try{
+            partList.add(table.toString() + "P1");
+            partList.add(table.toString() + "P2");
+            partList.add(table.toString() + "P3");
+            partList.add(table.toString() + "P4");
+            partList.add(table.toString() + "P5");
+            return ResponseEntity.status(HttpStatus.OK).body(partList);
+        }catch(Exception e){
+            return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+	}
+
     @GetMapping(value="/getAllData", produces = "application/json")
     public ResponseEntity<List<JobDetails>> getAllJobDetails(){
         List<JobDetails> jobDetailsList = new ArrayList<JobDetails>();

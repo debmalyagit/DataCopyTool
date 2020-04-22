@@ -157,11 +157,12 @@
                             <td>Table Name</td>
                             <td><select id="tableName" class="DBdropdown">
                               <option value="">--Select--</option>
-                                    <option value="Customers">Customers</option>
+                              <!--      <option value="Customers">Customers</option>
                                     <option value="Trades">Trades</option>
                                     <option value="Job_Details">Job_Details</option>
                                     <option value="Transaction">Transaction</option>
                                     <option value="Trades_10m">Trades_10m</option>
+                              -->
                             </select>  </td>
                             <td></td>
                             <td></td>
@@ -184,10 +185,11 @@
                             <td>
                               <select id="Partition" class="DBdropdown">
                                 <option value="">---Select---</option>
-                                <option value="P1">P1</option>
+                           <!--     <option value="P1">P1</option>
                                 <option value="P2">P2</option>
                                 <option value="P3">P3</option>
                                 <option value="P_Default">P_Default</option>
+                            -->    
                               </select>
 
                             </td>
