@@ -1,6 +1,6 @@
 package com.example.demo;
 
-import com.example.model.*;
+import com.example.model.JobDetails;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -15,10 +15,9 @@ public class CopyService {
 
     String excelFilePath = "E:\\Git\\DataCopyTool\\Job_Details.xlsx";
     Workbook wb;
-
     @Autowired
     private Environment env;
-
+    
     public Integer writeToFile(String fromDB, String fromSchName, String toDB, String toSchName, String tableName, String copyType){
         int jobId=0;
         try{
@@ -78,7 +77,7 @@ public class CopyService {
                     user+"/"+user+"@"+fromDb, "parfile=copy.par");
         }
         builder1.directory(new File("E:\\Git\\DataCopyTool\\"));
-        builder1.environment().put("ORACLE_HOME", env.getProperty("ORACLE_HOME") );
+        builder1.environment().put("ORACLE_HOME", env.getProperty("ORACLE_HOME"));
         builder1.environment().put("PATH", "%ORACLE_HOME%\\BIN;%PATH%");
 
         builder1.redirectErrorStream(true);
@@ -121,7 +120,7 @@ public class CopyService {
             ProcessBuilder builder1 = new ProcessBuilder(env.getProperty("ORACLE_HOME") + "\\BIN\\imp", toSch+"/"+toSch+"@"+toDB, "file="+jobId+".dmp",
                     "full=y", "log="+jobId+"_import.txt", "ignore=y");
             builder1.directory(new File("E:\\Git\\DataCopyTool\\"));
-            builder1.environment().put("ORACLE_HOME", env.getProperty("ORACLE_HOME"));
+            builder1.environment().put("ORACLE_HOME", env.getProperty("ORACLE_HOME") );
             builder1.environment().put("PATH", "%ORACLE_HOME%\\BIN;%PATH%");
             builder1.redirectErrorStream(true);
             p = builder1.start();
@@ -212,8 +211,27 @@ public class CopyService {
                     jobDetailsList.add(jobDetails);
                 }}
         }catch(IOException e){
-            throw new RuntimeException("Failed when reading the file. Please contact admin", e);
+            throw new RuntimeException("Failed when reading the file.", e);
         }
         return jobDetailsList;
+    }
+
+    public List<String> getValues(String key){
+        String value;
+        String valueSeperated[];
+        List<String> valueList= new ArrayList<>();
+        Properties configProp = new Properties();
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream("application.properties");
+        try {
+            configProp.load(in);
+            value = configProp.getProperty(key);
+            valueSeperated=value.split(",");
+            for(String s: valueSeperated){
+                valueList.add(s);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed when fetching values from property file.", e);
+        }
+        return valueList;
     }
 }

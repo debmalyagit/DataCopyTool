@@ -33,6 +33,9 @@
                 <li class="nav-item">
                   <a class="nav-link" id="manual-tab" data-toggle="tab" href="#manual" role="tab" aria-controls="contact" aria-selected="false">User-Manual</a>
                 </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="synthetic-tab" data-toggle="tab" href="#synthetic" role="tab" aria-controls="synthetic" aria-selected="false">Synthetic Data Creation</a>
+                </li>
               </ul>
             </div>
 
@@ -265,7 +268,7 @@
 
                     </div><!--dashboard  -->
                     <div class="tab-pane fade" id="manual" role="tabpanel" aria-labelledby="manual-tab">
-                      <table class="table">
+                      <table class="table" id="manualTable">
                         <thead class="thead-light">
                           <tr>
                             <td scope="col" style="font-size: 15px;">Click on the link to download <a  href="download.jsp" style="color: rgb(57, 132, 182);" >User-Manual</a></td>
@@ -277,6 +280,22 @@
                       </table>
 
                     </div><!--manual  -->
+                    
+                    <div class="tab-pane fade" id="synthetic" role="tabpanel" aria-labelledby="synthetic-tab">
+                      <div class="jumbotron jumbotron-fluid">
+                        <div class="container">
+                          <h1 class="display-4">Synthetic Data Creation</h1>
+                          <p class="lead"><font color=black size=+2><b>Hello</b></font>,<br>
+                            Our Engineers are <b>working hard</b> and </b>brainstorming harder</b> to bring up this feature.
+                            <br>As we all know "<I><U>Rome was not built in a day</U></I>", thus our brilliant team of <font color=purple><b>developers and testers</b></font>
+                            require some time to create the<font color= blue size=+1> <b>Magic Tool</b></font>. 
+                            Till then <strong>keep patience, Stay @Home and cheer the team</strong>.
+                          </p>
+                        </div>
+                      </div>
+                    </div>  <!--Synthetic Data Creation  -->
+
+                    
 
     </div>
 

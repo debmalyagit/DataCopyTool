@@ -50,7 +50,7 @@ $(document).ready(function(){
         if(validateF(fDBName,fSName,pwd)){
             
             console.log({usr:fSName,pass:pwd,dbn:fDBName});
-            $.post('http://localhost:8080/authDB',{usr:fSName,pass:pwd,dbn:fDBName})
+            $.post('/authDB',{usr:fSName,pass:pwd,dbn:fDBName,DbType:"source"})
             .done(function(response){
                 console.log(response);
                                               
@@ -76,7 +76,7 @@ $(document).ready(function(){
 
             })
             .fail( function(xhr, textStatus, errorThrown) {
-                alert(xhr.responseText);
+                alert("Sorce DB Connect Failed! "+xhr.responseText);
             });
             
             document.getElementById("fPWD").value='';
@@ -94,7 +94,7 @@ $(document).ready(function(){
         gtDB = tDBName;
         if(validateF(tDBName,tSName,pwd)){
             console.log({usr:tSName,pass:pwd,dbn:tDBName});
-            $.post('http://localhost:8080/authDB',{usr:tSName,pass:pwd,dbn:tDBName})
+            $.post('/authDB',{usr:tSName,pass:pwd,dbn:tDBName,DbType:"target"})
             .done(function(response){
                 console.log(response);
                                
@@ -122,7 +122,7 @@ $(document).ready(function(){
             }
             })
             .fail( function(xhr, textStatus, errorThrown) {
-                alert(xhr.responseText);
+                alert("Target DB Connect Failed! "+xhr.responseText);
             });    
             
             
@@ -137,7 +137,7 @@ $(document).ready(function(){
         $('#tableName').empty();
         $.ajax({
          type: 'GET',
-         url: '/getTabName',
+         url: '/getTabName/' + gfSName,
          success : function(data){
              console.log(data);
                        
@@ -381,7 +381,7 @@ function loadPartition(){
         },
         error: function(){alert("Partition: Option details not avaialble!");}    
         }) ;
-
+return true;
 }
 
 }
