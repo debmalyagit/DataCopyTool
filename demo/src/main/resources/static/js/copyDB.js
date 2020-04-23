@@ -71,7 +71,8 @@ $(document).ready(function(){
                 $('#collapseOne').hide();
                 $('#part').hide();
                 $('#Qry').hide();
-                $('#collapseTwo').show();                
+                $('#collapseTwo').show();   
+                loadTableList();             
             }
 
             })
@@ -119,6 +120,7 @@ $(document).ready(function(){
                     $('#part').hide();
                     $('#Qry').hide();
                     $('#collapseTwo').show();
+                    loadTableList();
             }
             })
             .fail( function(xhr, textStatus, errorThrown) {
@@ -132,25 +134,9 @@ $(document).ready(function(){
 
     });
 
+
     $('#collapseTwo').show(function(){
-        console.log('tableName drop down');
-        $('#tableName').empty();
-        $.ajax({
-         type: 'GET',
-         url: '/getTabName/' + gfSName,
-         success : function(data){
-             console.log(data);
-                       
-            $('#tableName').append("<option value='' selected>--Select--</option>");
-             $.each(data, function(index, value){
-                 console.log(value);
-                 $('#tableName').append("<option value='" + value + "'>"+value+"</option>");
-             });
-         },
-         error: function(){alert("tableName: Option details not avaialble!");}    
-        }) ;
-
-
+        loadTableList();
     });
 
     $('#copyType').click(function(){
@@ -381,7 +367,28 @@ function loadPartition(){
         },
         error: function(){alert("Partition: Option details not avaialble!");}    
         }) ;
-return true;
+    return true;
+    }
 }
 
-}
+function loadTableList(){
+        console.log('tableName drop down');
+        $('#tableName').empty();
+        if (gfSName != '' && gfSName != undefined){    
+            console.log('tableName inside if block');    
+                $.ajax({
+                type: 'GET',
+                url: '/getTabName/' + gfSName,
+                success : function(data){
+                    console.log(data);
+                            
+                    $('#tableName').append("<option value='' selected>--Select--</option>");
+                    $.each(data, function(index, value){
+                        console.log(value);
+                        $('#tableName').append("<option value='" + value + "'>"+value+"</option>");
+                    });
+                },
+                error: function(){alert("tableName: Option details not avaialble!");}    
+                }) ;
+            }     
+    }        
