@@ -58,8 +58,8 @@ public class CopyController {
         }
     }
 
-    @GetMapping(value="/getTabName/{usr}", produces = "application/json")
-    public ResponseEntity<List<String>> getAllTables(@PathVariable(value = "usr") String user){
+    @GetMapping(value="/getTabName", produces = "application/json")
+    public ResponseEntity<List<String>> getAllTables(/*@PathVariable(value = "usr") String user*/){
         List<String> tabList = new ArrayList<String>();
         /*
         try{
