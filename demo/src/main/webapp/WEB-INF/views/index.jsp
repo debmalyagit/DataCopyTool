@@ -71,9 +71,9 @@
                   <thead>
                     <tr>
 
-                      <th class="text-right" scope="col" ><h2><span class="badge badge-info">Source DB</span></h2></th>
+                      <th class="text-right" scope="col" ><h2><span style="width: 100%;text-align: center" class="badge badge-info">Source DB</span></h2></th>
                      
-                      <th class="text-right" scope="col" ><h2><span class="badge badge-info">Target DB</span></h2></h2></th>
+                      <th class="text-right" scope="col" ><h2><span style="width: 100%;text-align: center" class="badge badge-info">Target DB</span></h2></h2></th>
                      
 
 
@@ -101,22 +101,7 @@
                           </div>
                         </div>
                       </td>
-                      <!--
-                      <td scope="row">DB Name</td>
-                      <td>
-                        <select id="fDBName" class="DBdropdown">
-                          <option value="">---Select---</option>                          
-                        </select>
-                      </td>
-                      <td></td>
-                      <td></td>
-                      <td scope="row">DB Name</td>
-                      <td>
-                        <select id="tDBName" class="DBdropdown">
-                          <option value="">---Select---</option>                          
-                        </select>
-                      </td>
-                      -->
+                     
                     </tr>
                     <tr>
                       <td>
@@ -140,23 +125,7 @@
                           </div>
                         </div>
                       </td>
-                      <!--
-                      <td scope="row">Schema Name</td>
-                      <td>
-                        <select id="fSName" class="DBdropdown1">
-                          <option value="">---Select---</option>
-                        </select>
-                      </td>
-                      <td></td>
-                      <td></td>
-                      <td scope="row">Schema Name</td>
-                      <td>
-                        <select id="tSName" class="DBdropdown">
-                          <option value="">---Select---</option>
-                          
-                        </select>
-                      </td>
-                      -->
+                     
                     </tr>
 
                     <tr>
@@ -176,19 +145,11 @@
                           </div>
                         </div>
                       </td>
-                      <!--
-                      <td scope="row">Password</td>
-                      <td><input type="password" id="fPWD"> </td>
-
-                      <td></td>
-                      <td></td>
-                      <td scope="row">Password</td>
-                      <td><input type="password" id="tPWD"></td>
-                      -->
+                     
                     </tr>
 
                     <tr>                      
-                      <td><button id="fAuth" type="button" class="btn btn-primary btn-lg">Authenticate Source Connection</button></td>                      
+                      <td><button id="fAuth" type="button"  class="btn btn-primary btn-lg">Authenticate Source Connection</button></td>                      
                       <td><button id="tAuth" type="button" class="btn btn-primary btn-lg">Authenticate Target Connection</button> </td>
                     </tr>
                   </tbody>
