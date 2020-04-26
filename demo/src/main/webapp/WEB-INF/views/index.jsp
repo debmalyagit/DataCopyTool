@@ -60,7 +60,7 @@
               <h5 class="mb-0">
                 <button class="btn btn-link " data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
                   aria-controls="collapseOne">
-                  <div class="well"><h1><span class="badge badge-info">Login Details</span></h1></div>
+                  <div class="well"><h3><span class="badge badge-info">Login Details</span></h3></div>
                 </button>
               </h5>
             </div>
@@ -162,7 +162,7 @@
               <h5 class="mb-0">
                 <button class="btn btn-link collapsed" id='headingTwo' data-toggle="collapse" data-target="#collapseTwo"
                   aria-expanded="false" aria-controls="collapseTwo">
-                  <div class="well"><h1><span class="badge badge-info">DB Table Details</span></h1></div>
+                  <div class="well"><h3><span class="badge badge-info">DB Table Details</span></h3></div>
                 </button>
               </h5>
             </div>
@@ -286,7 +286,331 @@
     <!--manual  -->
 
     <div class="tab-pane fade" id="synthetic" role="tabpanel" aria-labelledby="synthetic-tab">
-      <div class="jumbotron jumbotron-fluid">
+      <form id="SynForm">
+      <div class="container">
+        <div class="row" id="SynRow1">
+          <div class="col"><hr></div>
+          <div class="col-auto"><font color=blue size=+1><b> Connection Details</b></font></div>
+          <div class="col"><hr></div>
+      </div>
+        <div class="row" id="SynRow2">
+          <div class="col">            
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">DB Environment:</label>
+              </div>
+              <select class="custom-select" id="SynDBNameCon">
+                <option selected>Choose...</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+            </div> <!--class="input-group mb-3"-->
+          </div> <!--div class="col"-->
+          <div class="col">            
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">Schema Name:</label>
+              </div>
+              <select class="custom-select" id="SynSchNameCon">
+                <option selected>Choose...</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+            </div> <!--class="input-group mb-3"-->
+          </div> <!--div class="col"-->
+          <div class="col">            
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">Password:</span>
+              </div>
+              <input type="password" id="SynPassCon" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1">
+            </div>
+            <!--class="input-group mb-3"-->
+          </div>          <!--div class="col"-->          
+        </div>  <!--div class="row"-->
+        <div class="row" id="SynRow3">
+          <div class="col-4"></div>
+          <div class="col-4"></div>
+          <div class="col">
+            <button type="button" id="SynAuthSubCon"  class="btn btn-primary btn-sm">Authenticate</button>
+          </div> <!--div class="col"-->
+        </div>
+      
+        <div class="row" id="SynRow4">
+          <div class="col"><hr></div>
+          <div class="col-auto"><font color=blue size=+1><b>Identify Table Joins</b></font></div>
+          <div class="col"><hr></div>
+      </div>
+      <div class="row" id="SynRow5">
+        <div class="col">            
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Schema:</label>
+            </div>
+            <select class="custom-select" id="SynSchName1">
+              <option selected>Choose...</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+          </div> <!--class="input-group mb-3"-->
+        </div> <!--div class="col"-->
+        <div class="col">            
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Table:</label>
+            </div>
+            <select class="custom-select" id="SynTabName1">
+              <option selected>Choose...</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+          </div> <!--class="input-group mb-3"-->
+        </div> <!--div class="col"-->
+        <div class="col">            
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Column:</label>
+            </div>
+            <select class="custom-select" id="SynColName1">
+              <option selected>Choose...</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+          </div> <!--class="input-group mb-3"-->
+        </div>          <!--div class="col"-->
+      </div>  <!--div class="row"-->
+
+      <div class="row" id="SynRow6">
+        <div class="col">            
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Related Schema:</label>
+            </div>
+            <select class="custom-select" id="SynSchName2">
+              <option selected>Choose...</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+          </div> <!--class="input-group mb-3"-->
+        </div> <!--div class="col"-->
+        <div class="col">            
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Related Table:</label>
+            </div>
+            <select class="custom-select" id="SynTabName2">
+              <option selected>Choose...</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+          </div> <!--class="input-group mb-3"-->
+        </div> <!--div class="col"-->
+        <div class="col">            
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Related Column:</label>
+            </div>
+            <select class="custom-select" id="SynColName2">
+              <option selected>Choose...</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+          </div> <!--class="input-group mb-3"-->
+        </div>          <!--div class="col"-->
+      </div>  <!--div class="row"-->
+      <div class="row" id="SynRow7">
+        <div class="col-4">
+            <div class="form-check">
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">
+                    <input type="checkbox" id="SynStatic" aria-label="Checkbox for following text input">
+                  </div>
+                </div>
+                <span class="input-group-text" id="inputGroup-sizing-default">Static ?</span>
+              </div>
+            </div> <!--div class="form-check"-->
+        </div>  <!--div class="col"-->
+        <div class="col-4">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Max Rows:</span>
+            </div>
+            <input type="integer" id="SynMR" class="form-control" placeholder="Max Row Count" aria-label="MaxRows" aria-describedby="basic-addon1">
+          </div>
+        </div> <!--div class="col"-->
+        <div class="col">
+          <button type="button" id="SynJoinSubmit"  class="btn btn-primary btn-sm">Save Relation</button>
+        </div> <!--div class="col"-->
+      </div> <!--div class="row" id="SynRow7"-->
+      <div class="row" id="SynRow8">
+        <div class="col"><hr></div>
+        <div class="col-auto"><font color=blue size=+1><b>Submitted Joins</b></font></div>
+        <div class="col"><hr></div>
+      </div> <!--div class="row" id="SynRow8"-->
+    <div class="row" id="SynRow9">
+      <table id="SynJoinTab"  class="table table-hover table-sm table-bordered table-dark">
+        <thead>
+          <tr>
+            <th scope="col">Remove?</th>
+            <th scope="col">Schema</th>
+            <th scope="col">Table</th>
+            <th scope="col">Column</th>
+            <th scope="col">Related Schema</th>
+            <th scope="col">Related Table</th>
+            <th scope="col">Related Column</th>
+            <th scope="col">Static</th>
+            <th scope="col">Max Count</th>
+          </tr>
+        </thead>
+        <tbody id="SynJoinTab-body">          
+        </tbody>
+      </table>
+    </div> <!--div class="row" id="SynRow9"-->
+    <div class="row" id="SynRow10">
+      <div class="col-4"></div>
+      <div class="col-4"></div>
+      <div class="col">
+        <button type="button" id="SynFreezJSubmit"  class="btn btn-primary btn-sm">Freeze Joins</button>
+      </div> <!--div class="col"-->
+    </div>
+    <div class="row" id="SynRow11">
+      <div class="col"><hr></div>
+      <div class="col-auto"><font color=blue size=+1><b>Identify Filter Criterias</b></font></div>
+      <div class="col"><hr></div>
+    </div> <!--div class="row" id="SynRow8"-->
+
+    <div class="row" id="SynRow12">      
+        <div class="col-4">            
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Schema:</label>
+            </div>
+            <select class="custom-select" id="SynSchFltName">
+              <option selected>Choose...</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+          </div> <!--class="input-group mb-3"-->
+        </div> <!--div class="col"-->
+        <div class="col-4">            
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Table:</label>
+            </div>
+            <select class="custom-select" id="SynTabFltName">
+              <option selected>Choose...</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+          </div> <!--class="input-group mb-3"-->
+        </div> <!--div class="col"-->        
+    </div>  <!--div class="row"-->
+
+      <div class="row" id="SynRow14">      
+        <div class="col">            
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Column:</label>
+            </div>
+            <select class="custom-select" id="SynColFltName">
+              <option selected>Choose...</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+          </div> <!--class="input-group mb-3"-->
+        </div> <!--div class="col"-->
+        <div class="col">            
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Filter Criteria:</label>
+            </div>
+            <select class="custom-select" id="SynFC">
+              <option selected>Choose...</option>
+              <option value="eq">=</option>
+              <option value="lt"><</option>
+              <option value="gt">></option>
+              <option value="ne">!= OR <></option>
+              <option value="null" id="SynIsNull">is null</option>              
+              <option value="in">in</option>
+              <option value="notIn">not in</option>
+              <option value="exists">exists</option>
+              <option value="nexists">not exists</option>
+              <option value="ANY">ANY</option>
+              <option value="ALL">ALL</option>
+            </select>
+          </div> <!--class="input-group mb-3"-->
+        </div>          <!--div class="col"-->        
+        <div class="col-4">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">Filter Value:</span>
+            </div>
+            <input type="text" id="SynFV" class="form-control" placeholder="Filter Value" aria-label="FilterValue" aria-describedby="basic-addon1">
+          </div>
+        </div> <!--div class="col"-->
+      </div>  <!--div class="row"-->      
+     <div class="row" id="SynRow15">
+      <div class="col-4"></div>
+      <div class="col-4"></div>
+      <div class="col">
+        <button type="button" id="SynSaveFCSubmit"  class="btn btn-primary btn-sm">Save Filter Criteria</button>
+      </div> <!--div class="col"-->
+     </div> <!--div class="row" id="SynRow15"-->
+     <div class="row" id="SynRow16">
+      <div class="col"><hr></div>
+      <div class="col-auto"><font color=blue size=+1><b>Submitted Filters</b></font></div>
+      <div class="col"><hr></div>
+    </div> <!--div class="row" id="SynRow16"-->
+     <div class="row" id="SynRow17">
+      <table id="SynFilterTab" class="table table-hover table-sm table-bordered table-dark">
+        <thead>
+          <tr>
+            <th scope="col">Remove?</th>
+            <th scope="col">Schema</th>
+            <th scope="col">Table</th>
+            <th scope="col">Column</th>
+            <th scope="col">Condition</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+        <tbody id="SynFilterTab-body">          
+        </tbody>
+      </table>
+    </div> <!--div class="row" id="SynRow17"-->
+    <div class="row" id="SynRow18">
+      <div class="col-4"></div>
+      <div class="col-4"></div>
+      <div class="col">
+        <button type="button" id="SynFreezeFCSubmit"  class="btn btn-primary btn-sm">Freeze Filter Criteria</button>
+      </div> <!--div class="col"-->
+    </div> <!--div class="row" id="SynRow18"-->
+    <div class="row" id="SynRow19">
+      <div class="col"><hr></div>
+      <div class="col-auto"><font color=blue size=+1><b>Send Request for Synthetic Data Generation</b></font></div>
+      <div class="col"><hr></div>
+    </div> <!--div class="row" id="SynRow19"-->
+    <div class="row" id="SynRow20">          
+      <div class="col">
+        <button type="button" id="SynFinalSubmit"  class="btn btn-primary btn-lg">Send Request for Synthetic Data Generation</button>
+      </div> <!--div class="col"-->
+      <div class="col">
+        <button type="button" id="SynFinalReset"  class="btn btn-primary btn-lg">Reset the form for re-entry of information</button>
+      </div> <!--div class="col"-->
+    </div> <!--div class="row" id="SynRow20"-->
+     </div> <!-- div class="container" -->
+     <!-- <div class="jumbotron jumbotron-fluid">
         <div class="container">
           <h1 class="display-4">Synthetic Data Creation</h1>
           <p class="lead">
@@ -299,8 +623,9 @@
           </p>
         </div>
       </div>
-    </div>
-    <!--Synthetic Data Creation  -->
+        -->
+      </form> <!--form id="SynForm"-->
+    </div> <!--Synthetic Data Creation  -->
 
 
 
