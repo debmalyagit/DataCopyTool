@@ -383,6 +383,26 @@
             </select>
           </div> <!--class="input-group mb-3"-->
         </div>          <!--div class="col"-->
+        <div class="col">
+          <div class="form-check">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <input type="checkbox" id="SynStaticf" aria-label="Checkbox for following text input">
+                </div>
+              </div>
+              <span class="input-group-text" id="inputGroup-sizing-default">Static ?</span>
+            </div>
+          </div> <!--div class="form-check"-->
+      </div>  <!--div class="col"-->
+      <div class="col">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Max Rows:</span>
+          </div>
+          <input type="integer" id="SynMRf" class="form-control" placeholder="Max Row Count" aria-label="MaxRows" aria-describedby="basic-addon1">
+        </div>
+      </div> <!--div class="col"-->
       </div>  <!--div class="row"-->
 
       <div class="row" id="SynRow6">
@@ -425,30 +445,34 @@
             </select>
           </div> <!--class="input-group mb-3"-->
         </div>          <!--div class="col"-->
-      </div>  <!--div class="row"-->
-      <div class="row" id="SynRow7">
-        <div class="col-4">
-            <div class="form-check">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <div class="input-group-text">
-                    <input type="checkbox" id="SynStatic" aria-label="Checkbox for following text input">
-                  </div>
+        <div class="col">
+          <div class="form-check">
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <input type="checkbox" id="SynStatic" aria-label="Checkbox for following text input">
                 </div>
-                <span class="input-group-text" id="inputGroup-sizing-default">Static ?</span>
               </div>
-            </div> <!--div class="form-check"-->
-        </div>  <!--div class="col"-->
-        <div class="col-4">
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">Max Rows:</span>
+              <span class="input-group-text" id="inputGroup-sizing-default">Static ?</span>
             </div>
-            <input type="integer" id="SynMR" class="form-control" placeholder="Max Row Count" aria-label="MaxRows" aria-describedby="basic-addon1">
+          </div> <!--div class="form-check"-->
+      </div>  <!--div class="col"-->
+      <div class="col">
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">Max Rows:</span>
           </div>
-        </div> <!--div class="col"-->
+          <input type="integer" id="SynMR" class="form-control" placeholder="Max Row Count" aria-label="MaxRows" aria-describedby="basic-addon1">
+        </div>
+      </div> <!--div class="col"-->
+      </div>  <!--div class="row"-->
+      <div class="row" id="SynRow7"> 
+        <div class="col-4"></div>   
         <div class="col">
           <button type="button" id="SynJoinSubmit"  class="btn btn-primary btn-sm">Save Relation</button>
+        </div> <!--div class="col"-->`
+        <div class="col-4">
+          <button type="button" id="SynJoinReset"  class="btn btn-primary btn-sm">Reset</button>
         </div> <!--div class="col"-->
       </div> <!--div class="row" id="SynRow7"-->
       <div class="row" id="SynRow8">
@@ -476,15 +500,17 @@
       </table>
     </div> <!--div class="row" id="SynRow9"-->
     <div class="row" id="SynRow10">
-      <div class="col-4"></div>
-      <div class="col-4"></div>
-      <div class="col">
+      <div class="col-4"></div>      
+      <div class="col-4">
         <button type="button" id="SynFreezJSubmit"  class="btn btn-primary btn-sm">Freeze Joins</button>
+      </div> <!--div class="col"-->
+      <div class="col-4">
+        <button type="button" id="SynFreezJReset"  class="btn btn-primary btn-sm">Reset</button>
       </div> <!--div class="col"-->
     </div>
     <div class="row" id="SynRow11">
       <div class="col"><hr></div>
-      <div class="col-auto"><font color=blue size=+1><b>Identify Filter Criterias</b></font></div>
+      <div class="col-auto"><font color=blue size=+1><b>Synthetic Data Creation Conditions</b></font></div>
       <div class="col"><hr></div>
     </div> <!--div class="row" id="SynRow8"-->
 
@@ -534,21 +560,14 @@
         <div class="col">            
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <label class="input-group-text" for="inputGroupSelect01">Filter Criteria:</label>
+              <label class="input-group-text" for="inputGroupSelect01">Synthetic Criteria:</label>
             </div>
             <select class="custom-select" id="SynFC">
               <option selected>Choose...</option>
               <option value="eq">=</option>
-              <option value="lt"><</option>
-              <option value="gt">></option>
-              <option value="ne">!= OR <></option>
-              <option value="null" id="SynIsNull">is null</option>              
-              <option value="in">in</option>
-              <option value="notIn">not in</option>
-              <option value="exists">exists</option>
-              <option value="nexists">not exists</option>
-              <option value="ANY">ANY</option>
-              <option value="ALL">ALL</option>
+              <option value="static">static</option>
+              <option value="inc">incremental</option>
+              <option value="random">random</option>             
             </select>
           </div> <!--class="input-group mb-3"-->
         </div>          <!--div class="col"-->        
@@ -562,10 +581,12 @@
         </div> <!--div class="col"-->
       </div>  <!--div class="row"-->      
      <div class="row" id="SynRow15">
-      <div class="col-4"></div>
-      <div class="col-4"></div>
+      <div class="col-4"></div>      
       <div class="col">
         <button type="button" id="SynSaveFCSubmit"  class="btn btn-primary btn-sm">Save Filter Criteria</button>
+      </div> <!--div class="col"-->
+      <div class="col-4">
+        <button type="button" id="SynSaveFCReset"  class="btn btn-primary btn-sm">Reset</button>
       </div> <!--div class="col"-->
      </div> <!--div class="row" id="SynRow15"-->
      <div class="row" id="SynRow16">
@@ -590,10 +611,12 @@
       </table>
     </div> <!--div class="row" id="SynRow17"-->
     <div class="row" id="SynRow18">
-      <div class="col-4"></div>
-      <div class="col-4"></div>
+      <div class="col-4"></div>      
       <div class="col">
         <button type="button" id="SynFreezeFCSubmit"  class="btn btn-primary btn-sm">Freeze Filter Criteria</button>
+      </div> <!--div class="col"-->
+      <div class="col-4">
+        <button type="button" id="SynFreezeFCReset"  class="btn btn-primary btn-sm">Reset</button>
       </div> <!--div class="col"-->
     </div> <!--div class="row" id="SynRow18"-->
     <div class="row" id="SynRow19">

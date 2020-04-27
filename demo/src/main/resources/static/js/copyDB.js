@@ -66,6 +66,7 @@ $(document).ready(function(){
                         console.log("line: 60 fAuthFlag is True");
                     }
                     alert("Welcome! You are authenticated to Source DB.");
+                    $('#fPWD').val = '';
                 }
                 console.log("Checking at line 64");
             if(fAuthFlag && tAuthFlag){
@@ -114,6 +115,7 @@ $(document).ready(function(){
                         console.log("line: 111 tAuthFlag is True");
                     }
                     alert("Welcome! You are authenticated to Target DB.");
+                    $('#tPWD').val = '';
                 }
                 console.log("Checking at line 109");
                 if(fAuthFlag && tAuthFlag){
@@ -219,9 +221,6 @@ $(document).ready(function(){
                            
     });
 
-
-
-
     $('#dashboard-tab').click(function(){
        var obj=$('#dashtable');
 
@@ -262,11 +261,15 @@ $(document).ready(function(){
             }
         });
 
+        
+
         $('#SynAuthSubCon').click(function(){
             var i;
             for(i=4;i<=7;i++){
                 $('#SynRow' + i).show();
             }
+
+            $('#SynPassCon').val = '';
         });
 
         $('#SynJoinSubmit').click(function(){
@@ -295,7 +298,7 @@ $(document).ready(function(){
 
         });
         
-    $('[id^="SynRemoveRel"]').click(function(){    
+    $('[id^=SynRemoveRel]').click(function(){    
         console.log("Thanks for removal of this row! " );
         console.log($(this).id);
     });
@@ -333,7 +336,9 @@ $(document).ready(function(){
         if(!gOpenFilter ){
             gOpenFilter = true;
         }
-       
+
+        
+        console.log("Entered SynSaveFCSubmit action");
         tableFilterTabOps();
 
     });
@@ -358,9 +363,25 @@ $(document).ready(function(){
             return false;            
         }
         alert("Request sent for processing.");
+        location.reload();
+        $('#myTabContent').tabs({active:-1});
+    });
+    $('#SynFC').click(function(){
+        if ($('#SynFC option:selected').text() == "is null"){
+            console.log("Inside #SynFC option:selected");
+            $('#SynFV').hide();
+            $('#SynFV').val = '';
+            $('#SynFV').value = '';
+            $('#SynFV').text = '';
+        } else{
+            console.log("Inside #SynFV show");
+            $('#SynFV').show();
+            $('#SynFV').val = '';
+            $('#SynFV').value = '';
+            $('#SynFV').text = '';
+        }
 
     });
-
     
     $('#SynFinalReset').click(function(){
         if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
@@ -371,8 +392,38 @@ $(document).ready(function(){
        // $('#SynForm').trigger("reset");
         location.reload();
         alert("Form reset done!");
+        //$('#tabdiv').tabs({active:-1});
 
     });
+
+    $('#SynFreezJReset').click(function(){
+        if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
+            return false;            
+        }
+        location.reload();
+    })
+
+    $('#SynJoinReset').click(function(){
+        if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
+            return false;            
+        }
+        location.reload();
+    });
+
+    $('#SynSaveFCReset').click(function(){
+        if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
+            return false;            
+        }
+        location.reload();
+    });
+
+    $('#SynFreezeFCReset').click(function(){
+        if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
+            return false;            
+        }
+        location.reload();
+
+    })
 });
 
 function validateF(fDBName,fSName,pwd){
@@ -580,9 +631,14 @@ function tableFilterTabOps(){
     rcolumn.innerHTML = $('#SynColFltName option:selected').text();
     var rJschema = row.insertCell(4);
     rJschema.innerHTML = $('#SynFC option:selected').text();
+    /*if ($('#SynFC option:selected').text() == "is null"){
+        console.log("Inside #SynFC option:selected");
+        $('#SynFV').hide();
+    } */
     var rJtable = row.insertCell(5);
     rJtable.innerHTML = $('#SynFV').val();
+    
 
     return true;
 
-}
+}   
