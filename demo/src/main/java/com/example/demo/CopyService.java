@@ -14,7 +14,13 @@ import java.util.*;
 public class CopyService {
 
     String excelFilePath = "E:\\Git\\DataCopyTool\\Job_Details.xlsx";
+    String dmpFilePath = "E:\\Git\\DataCopyTool\\";
+
     Workbook wb;
+    Properties configProp = new Properties();
+    InputStream in = this.getClass().getClassLoader().getResourceAsStream("application.properties");
+    String value;
+    String message;
     @Autowired
     private Environment env;
     
@@ -56,7 +62,7 @@ public class CopyService {
         }
         return jobId;
     }
-    public void export(String user, String password, String fromDb, String tableName, int jobId, String copyType, String partition, String textArea) throws FileNotFoundException {
+    public void export(String user, String password, String fromDb, String tableName, int jobId, String copyType, String partition, String textArea) throws IOException {
         System.out.println("Copying Table - "+tableName +"for copyType - "+copyType);
         Process p = null;
         ProcessBuilder builder1 = null;
@@ -86,6 +92,7 @@ public class CopyService {
             Sheet firstSheet = wb.getSheetAt(0);
             Cell cell3 = firstSheet.getRow(jobId).getCell(9);
             Cell cell = firstSheet.getRow(jobId).getCell(10);
+            Cell cell4 = firstSheet.getRow(jobId).getCell(11);
             p = builder1.start();
             BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
@@ -94,12 +101,16 @@ public class CopyService {
                 if (line == null) { break; }
                 System.out.println(line);
                 if(line.contains("exported")){
-                    cell.setCellValue(line);
-                }else if(line.contains("unsuccessfully")){
-                    cell.setCellValue(line);
+                    message=message+"...."+line;
+                   // cell.setCellValue(line);
+                }else if(line.contains("unsuccessfully") || line.contains("unknown parameter name") || line.contains("ORA-")){
+                    message=message+"...."+line;
+                    //cell.setCellValue(line);
                     cell3.setCellValue("Failed");
+                    cell4.setCellValue("Import did not happen as export failed");
                 }
             }
+            cell.setCellValue(message);
             Cell cell2 = firstSheet.getRow(jobId).getCell(8);
             cell2.setCellValue(new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date()));
             FileOutputStream fileOut = new FileOutputStream(excelFilePath);
@@ -126,16 +137,20 @@ public class CopyService {
             p = builder1.start();
             BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
+            message="Importing Data...";
             while (true) {
                 line = r.readLine();
                 if (line == null) { break; }
                 System.out.println(line);
                 if(line.contains("imported")){
-                    cell3.setCellValue(line);
+                    message=message+"...."+line;
+                    //cell3.setCellValue(line);
                     cell.setCellValue("Completed");
                 }
-                else if(line.contains("failed")){
-                    cell3.setCellValue(line);
+                else if(line.contains("failed") || line.contains("Unable to set values for column")|| line.contains("ORA-")){
+                    message=message+"...."+line;
+               // else if(line.contains("failed")){
+               //     cell3.setCellValue(line);
                     cell.setCellValue("Failed");
                 }
             }
@@ -217,11 +232,11 @@ public class CopyService {
     }
 
     public List<String> getValues(String key){
-        String value;
+       // String value;
         String valueSeperated[];
         List<String> valueList= new ArrayList<>();
-        Properties configProp = new Properties();
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream("application.properties");
+        //Properties configProp = new Properties();
+        //InputStream in = this.getClass().getClassLoader().getResourceAsStream("application.properties");
         try {
             configProp.load(in);
             value = configProp.getProperty(key);
@@ -233,5 +248,13 @@ public class CopyService {
             throw new RuntimeException("Failed when fetching values from property file.", e);
         }
         return valueList;
+    }
+    public void deleteFile(int jobId){
+        File myObj = new File(dmpFilePath+jobId+".dmp");
+        if (myObj.delete()) {
+            System.out.println("Deleted the dmp file: " + myObj.getName());
+        } else {
+            System.out.println("Failed to delete the file.");
+        }
     }
 }

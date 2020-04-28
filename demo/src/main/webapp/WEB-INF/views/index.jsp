@@ -18,13 +18,13 @@
 
 <body onload="loadOptions()">
 
-  <!--  
+   
               <div class="header">
 
               </div>
 
 
-              -->
+              
   <div id="tabdiv">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item">
@@ -167,7 +167,7 @@
               </h5>
             </div>
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-              <div class="card-body">
+           <!--   <div class="card-body"> -->
 
                 <table class="table" id="DBTb2">
                   <tbody>
@@ -182,9 +182,6 @@
                           </select>
                         </div>
                       </td>
-                      
-                    </tr>
-                    <tr>
                       <td>
                         <div class="input-group mb-3">
                           <div class="input-group-append">
@@ -198,40 +195,30 @@
                           </select>
                         </div>
                       </td>
-                      
-                    </tr>
-                    <tr id="part">
-                      <td>
-                        <div class="input-group mb-3">
+                      <td><button id="sub" type="button" class="btn btn-primary btn-lg btn-block">Submit for Execution</button></td>
+                    </tr>                    
+                    <tr >
+                      <td >
+                        <div class="input-group" id="part">
                           <div class="input-group-prepend">
                             <label class="input-group-text" for="inputGroupSelect01">Partition</label>
                           </div>
                           <select class="custom-select" id="Partition">
                             <option selected>Choose...</option>
                           </select>
-                        </div>
-                      </td>
-                     
-                    </tr>
-                    <tr id="Qry">                   
-                      <td>
-                        <div class="input-group">
+                        </div>                      
+                        <div class="input-group" id="Qry">
                           <div class="input-group-prepend">
                             <span class="input-group-text">Filter Criteria</span>
                           </div>
                           <textarea id="Textarea" class="form-control" aria-label="With textarea"></textarea>
                         </div>
-                      </td>
-                     
-                    </tr>
-                    <tr>
-                      <td><button id="sub" type="button" class="btn btn-primary btn-lg btn-block">Submit for Execution</button></td>
-                       
-                    </tr>
+                      </td> 
+                    </tr>                                     
                   </tbody>
                 </table>
 
-              </div>
+            <!--  </div> -->
             </div>
           </div>
 
@@ -306,20 +293,15 @@
                 <option value="3">Three</option>
               </select>
             </div> <!--class="input-group mb-3"-->
-          </div> <!--div class="col"-->
-          <div class="col">            
-            <div class="input-group mb-3">
+          </div> <!--div class="col"-->  
+          <div class="col">   
+            <div class="input-group" >
               <div class="input-group-prepend">
-                <label class="input-group-text" for="inputGroupSelect01">Schema Name:</label>
+                <span class="input-group-text">User:</span>
               </div>
-              <select class="custom-select" id="SynSchNameCon">
-                <option selected>Choose...</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-              </select>
-            </div> <!--class="input-group mb-3"-->
-          </div> <!--div class="col"-->
+              <input type="text" id="SynUsrCon" class="form-control" placeholder="User" aria-label="Login" aria-describedby="basic-addon1">
+            </div>  
+          </div>    <!--div class="col"-->  
           <div class="col">            
             <div class="input-group mb-3">
               <div class="input-group-prepend">
@@ -331,7 +313,7 @@
           </div>          <!--div class="col"-->          
         </div>  <!--div class="row"-->
         <div class="row" id="SynRow3">
-          <div class="col-4"></div>
+          <div class="col-4" id="SynBlank"></div>         
           <div class="col-4"></div>
           <div class="col">
             <button type="button" id="SynAuthSubCon"  class="btn btn-primary btn-sm">Authenticate</button>
@@ -364,9 +346,7 @@
             </div>
             <select class="custom-select" id="SynTabName1">
               <option selected>Choose...</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              
             </select>
           </div> <!--class="input-group mb-3"-->
         </div> <!--div class="col"-->
@@ -591,7 +571,7 @@
      </div> <!--div class="row" id="SynRow15"-->
      <div class="row" id="SynRow16">
       <div class="col"><hr></div>
-      <div class="col-auto"><font color=blue size=+1><b>Submitted Filters</b></font></div>
+      <div class="col-auto"><font color=blue size=+1><b>Submitted Synthetic Data Generation Requests</b></font></div>
       <div class="col"><hr></div>
     </div> <!--div class="row" id="SynRow16"-->
      <div class="row" id="SynRow17">
