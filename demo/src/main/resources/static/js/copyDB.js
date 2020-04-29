@@ -295,6 +295,25 @@ $(document).ready(function(){
                     for(i=4;i<=7;i++){
                         $('#SynRow' + i).show();
                     }
+
+                    $.get("/getAllGrantSchemaList").done(function(response){
+                        console.log(response);
+                        $('#SynSchName1').empty();
+                        $('#SynSchName1').append("<option value='' selected>--Select--</option>");
+                        $('#SynSchName2').empty();
+                        $('#SynSchName2').append("<option value='' selected>--Select--</option>");
+                        $.each(response,function(index, value){
+                            console.log(value);
+                            $('#SynSchName1').append("<option value='" + value + "'>"+value+"</option>");
+                            $('#SynSchName2').append("<option value='" + value + "'>"+value+"</option>");
+                        });
+
+                    })
+                    .fail( function(xhr, textStatus, errorThrown) {
+                        console.log("List retrieve Failed! "+xhr.responseText);
+                    });
+                  
+              
                 }
                 console.log("Checking ");
                
@@ -310,6 +329,84 @@ $(document).ready(function(){
 
             $('#SynPassCon').val = '';
         });
+
+        $('#SynSchName1').change(function(){
+            var selOpt = $('#SynSchName1 option:selected').text();
+            $.get("/getTabName/" + selOpt).done(function(response){
+                console.log(response);
+                $('#SynTabName1').empty();
+                $('#SynTabName1').append("<option value='' selected>--Select--</option>");
+                $.each(response,function(index, value){
+                    console.log(value);
+                    $('#SynTabName1').append("<option value='" + value + "'>"+value+"</option>");
+                });
+
+            })
+            .fail( function(xhr, textStatus, errorThrown) {
+                console.log("List retrieve Failed! "+xhr.responseText);
+            });
+
+
+        });
+
+        $('#SynTabName1').change(function(){
+            var selOpt = $('#SynSchName1 option:selected').text();
+            var selOpt2 = $('#SynTabName1 option:selected').text();
+            $.get("/getColumnName/" + selOpt + "/" + selOpt2).done(function(response){
+                console.log(response);
+                $('#SynColName1').empty();
+                $('#SynColName1').append("<option value='' selected>--Select--</option>");
+                $.each(response,function(index, value){
+                    console.log(value);
+                    $('#SynColName1').append("<option value='" + value + "'>"+value+"</option>");
+                });
+
+            })
+            .fail( function(xhr, textStatus, errorThrown) {
+                console.log("List retrieve Failed! "+xhr.responseText);
+            });
+
+        });
+
+//Related Join Table
+        $('#SynSchName2').change(function(){
+            var selOpt = $('#SynSchName2 option:selected').text();
+            $.get("/getTabName/" + selOpt).done(function(response){
+                console.log(response);
+                $('#SynTabName2').empty();
+                $('#SynTabName2').append("<option value='' selected>--Select--</option>");
+                $.each(response,function(index, value){
+                    console.log(value);
+                    $('#SynTabName2').append("<option value='" + value + "'>"+value+"</option>");
+                });
+
+            })
+            .fail( function(xhr, textStatus, errorThrown) {
+                console.log("List retrieve Failed! "+xhr.responseText);
+            });
+
+
+        });
+
+        $('#SynTabName2').change(function(){
+            var selOpt = $('#SynSchName2 option:selected').text();
+            var selOpt2 = $('#SynTabName2 option:selected').text();
+            $.get("/getColumnName/" + selOpt + "/" + selOpt2).done(function(response){
+                console.log(response);
+                $('#SynColName2').empty();
+                $('#SynColName2').append("<option value='' selected>--Select--</option>");
+                $.each(response,function(index, value){
+                    console.log(value);
+                    $('#SynColName2').append("<option value='" + value + "'>"+value+"</option>");
+                });
+
+            })
+            .fail( function(xhr, textStatus, errorThrown) {
+                console.log("List retrieve Failed! "+xhr.responseText);
+            });
+
+        });
+
 
         $('#SynJoinSubmit').click(function(){
             var k;
@@ -351,6 +448,32 @@ $(document).ready(function(){
         for (l=11;l<=15;l++){
             $('#SynRow'+l).show();
         }
+           
+        var valT = [];
+
+        $('#SynSchFltName').empty();
+        $('#SynSchFltName').append("<option value='' selected>--Select--</option>");        
+        $('#SynJoinTab-body tr').each(function(index, value){
+           /* console.log(index + '-> ' + value.cells[1].innerHTML );            
+            console.log(index + '-> ' + value.cells[4].innerHTML );*/
+            valT.push(value.cells[1].innerText);
+            valT.push(value.cells[4].innerText);            
+           /* $('#SynSchFltName').append("<option value='" + value.cells[1].innerHTML + "'>"+value.cells[1].innerHTML+"</option>");
+            $('#SynTabFltName').append("<option value='" + value.cells[2].innerHTML + "'>"+value.cells[2].innerHTML+"</option>");
+            $('#SynSchFltName').append("<option value='" + value.cells[4].innerHTML + "'>"+value.cells[4].innerHTML+"</option>");
+            $('#SynTabFltName').append("<option value='" + value.cells[5].innerHTML + "'>"+value.cells[5].innerHTML+"</option>");
+            */
+        });
+
+        valTab = jQuery.unique(valT);
+
+        console.log("valTab: " + valTab.length);
+
+        $.each(valTab, function(index, value1){
+            $('#SynSchFltName').append("<option value='" + index + "'>"+ value1 +"</option>");
+            console.log(value1);
+        });
+
 
         $('#SynFreezJSubmit').hide();
     });
@@ -440,6 +563,8 @@ $(document).ready(function(){
         location.reload();
         //$('#myTabContent').tabs({active:-1});
     });
+
+
     $('#SynFC').click(function(){
         if ($('#SynFC option:selected').text() == "is null"){
             console.log("Inside #SynFC option:selected");
@@ -501,131 +626,7 @@ $(document).ready(function(){
 
     
     
-    $('#SynSchName1').click(function(){
-        console.log("Checking  SynSchName1");
-        $('#SynSchName1').empty();
-        $.ajax({
-         type: 'GET',
-         url: '/getAllGrantSchemaList',
-         //contentType: 'application/json',
-         success : function(data){
-             console.log(data);
-            // var res = $.parseJSON(data);
-            $('#SynSchName1').append("<option value='' selected>--Select--</option>");
-             $.each(data, function(index, value){
-                 console.log(value);
-                 $('#SynSchName1').append("<option value='" + value + "'>"+value+"</option>");
-             });
-         },
-         error: function(){alert("Schema Name: Option details not avaialble!"); location.reload();}
-        }) ;        
-    });
 
-
-    $('#SynTabName1').click(function(){
-        console.log("Checking  SynTabName1");
-        $('#SynTabName1').empty();
-        $.ajax({
-         type: 'GET',
-         url: '/getTabName/' + $('#SynSchName1').val(),
-         //contentType: 'application/json',
-         success : function(data){
-             console.log(data);
-            // var res = $.parseJSON(data);
-            $('#SynTabName1').append("<option value='' selected>--Select--</option>");
-             $.each(data, function(index, value){
-                 console.log(value);
-                 $('#SynTabName1').append("<option value='" + value + "'>"+value+"</option>");
-             });
-         },
-         error: function(){alert("Table Name: Option details not avaialble!"); location.reload();}
-        }) ;        
-    });
-
-
-    $('#SynColName1').click(function(){
-        console.log("Checking  SynColName1");
-        $('#SynColName1').empty();
-        $.ajax({
-         type: 'GET',
-         url: '/getTabName/' + $('#SynSchName1').val() + "/" + $('#SynTabName1').val(),
-         //contentType: 'application/json',
-         success : function(data){
-             console.log(data);
-            // var res = $.parseJSON(data);
-            $('#SynColName1').append("<option value='' selected>--Select--</option>");
-             $.each(data, function(index, value){
-                 console.log(value);
-                 $('#SynColName1').append("<option value='" + value + "'>"+value+"</option>");
-             });
-         },
-         error: function(){alert("Column Name: Option details not avaialble!"); location.reload();}
-        }) ;        
-    });
-
-//Related Schema
-
-        $('#SynSchName2').click(function(){
-            console.log("Checking  SynSchName2");
-            $('#SynSchName1').empty();
-            $.ajax({
-            type: 'GET',
-            url: '/getAllGrantSchemaList',
-            //contentType: 'application/json',
-            success : function(data){
-                console.log(data);
-                // var res = $.parseJSON(data);
-                $('#SynSchName2').append("<option value='' selected>--Select--</option>");
-                $.each(data, function(index, value){
-                    console.log(value);
-                    $('#SynSchName2').append("<option value='" + value + "'>"+value+"</option>");
-                });
-            },
-            error: function(){alert("Related Schema Name: Option details not avaialble!"); location.reload();}
-            }) ;        
-        });
-
-
-        $('#SynTabName2').click(function(){
-            console.log("Checking  SynTabName2");
-            $('#SynTabName2').empty();
-            $.ajax({
-            type: 'GET',
-            url: '/getTabName/' + $('#SynSchName2').val(),
-            //contentType: 'application/json',
-            success : function(data){
-                console.log(data);
-                // var res = $.parseJSON(data);
-                $('#SynTabName2').append("<option value='' selected>--Select--</option>");
-                $.each(data, function(index, value){
-                    console.log(value);
-                    $('#SynTabName2').append("<option value='" + value + "'>"+value+"</option>");
-                });
-            },
-            error: function(){alert("Related Table Name: Option details not avaialble!"); location.reload();}
-            }) ;        
-        });
-
-
-        $('#SynColName2').click(function(){
-            console.log("Checking  SynColName2");
-            $('#SynColName2').empty();
-            $.ajax({
-            type: 'GET',
-            url: '/getTabName/' + $('#SynSchName2').val() + "/" + $('#SynTabName2').val(),
-            //contentType: 'application/json',
-            success : function(data){
-                console.log(data);
-                // var res = $.parseJSON(data);
-                $('#SynColName2').append("<option value='' selected>--Select--</option>");
-                $.each(data, function(index, value){
-                    console.log(value);
-                    $('#SynColName2').append("<option value='" + value + "'>"+value+"</option>");
-                });
-            },
-            error: function(){alert("Related Column Name: Option details not avaialble!"); location.reload();}
-            }) ;        
-        });
 });
 
 

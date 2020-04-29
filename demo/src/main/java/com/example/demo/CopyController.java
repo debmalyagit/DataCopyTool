@@ -241,9 +241,9 @@ public class CopyController {
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @RequestMapping(value="/getColumnName/{usr}/{table}", method = RequestMethod.GET)
-    public ResponseEntity<List<String>> getAllColumns(@RequestParam("usr") String usr, @RequestParam("table") String table) {
+    
+    @GetMapping(value="/getColumnName/{usr}/{table}", produces = "application/json")
+    public ResponseEntity<List<String>> getAllColumns(@PathVariable("usr") String usr, @PathVariable("table") String table) {
         List<String> columnList = new ArrayList<String>();
         /*try{
             Statement st = conFromDb.createStatement();
