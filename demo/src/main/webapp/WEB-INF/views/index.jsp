@@ -288,9 +288,9 @@
               </div>
               <select class="custom-select" id="SynDBNameCon">
                 <option selected>Choose...</option>
-                <option value="1">One</option>
+               <!-- <option value="1">One</option>
                 <option value="2">Two</option>
-                <option value="3">Three</option>
+                <option value="3">Three</option> -->
               </select>
             </div> <!--class="input-group mb-3"-->
           </div> <!--div class="col"-->  
@@ -468,6 +468,8 @@
             <th scope="col">Schema</th>
             <th scope="col">Table</th>
             <th scope="col">Column</th>
+            <th scope="col">Static</th>
+            <th scope="col">Max Count</th>
             <th scope="col">Related Schema</th>
             <th scope="col">Related Table</th>
             <th scope="col">Related Column</th>
@@ -502,9 +504,9 @@
             </div>
             <select class="custom-select" id="SynSchFltName">
               <option selected>Choose...</option>
-              <option value="1">One</option>
+            <!--  <option value="1">One</option>
               <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option value="3">Three</option>  -->
             </select>
           </div> <!--class="input-group mb-3"-->
         </div> <!--div class="col"-->
@@ -515,9 +517,9 @@
             </div>
             <select class="custom-select" id="SynTabFltName">
               <option selected>Choose...</option>
-              <option value="1">One</option>
+            <!--  <option value="1">One</option>
               <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option value="3">Three</option> -->
             </select>
           </div> <!--class="input-group mb-3"-->
         </div> <!--div class="col"-->        
@@ -531,9 +533,9 @@
             </div>
             <select class="custom-select" id="SynColFltName">
               <option selected>Choose...</option>
-              <option value="1">One</option>
+        <!--      <option value="1">One</option>
               <option value="2">Two</option>
-              <option value="3">Three</option>
+              <option value="3">Three</option>  -->
             </select>
           </div> <!--class="input-group mb-3"-->
         </div> <!--div class="col"-->
