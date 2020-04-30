@@ -411,7 +411,36 @@ $(document).ready(function(){
 
         $('#SynJoinSubmit').click(function(){
             var k;
-            var table = document.getElementById("SynJoinTab-body");
+            //var table = document.getElementById("SynJoinTab-body");
+
+            if( $('#SynSchName1 option:selected').text() == "--Select--"){
+                alert("Please choose a Schema option! ");
+                return false;
+            } 
+            else if($('#SynTabName1 option:selected').text() == "--Select--"){
+                alert("Please choose a Table option! ");
+                return false;
+            }
+            else if($('#SynColName1 option:selected').text() == "--Select--"){
+                alert("Please choose a Column option! ");
+                return false;
+            }
+            else if( $('#SynSchName2 option:selected').text() == "--Select--"){
+                alert("Please choose a Schema option! ");
+                return false;
+            } 
+            else if($('#SynTabName2 option:selected').text() == "--Select--"){
+                alert("Please choose a Table option! ");
+                return false;
+            }
+            else if($('#SynColName2 option:selected').text() == "--Select--"){
+                alert("Please choose a Column option! ");
+                return false;
+            }
+            else {
+                console.log("Good to proceed!");
+            }
+    
             if(!gOpenJoin){
                 console.log("Entered gOpenJoin");
                 for(k=8;k<=10;k++){
@@ -428,14 +457,20 @@ $(document).ready(function(){
                 gOpenJoin = true;
             }
            
-            tableJoinTabOps();
+            var vBtId = tableJoinTabOps();
+            vBtId = "\'#" + vBtId + "\'";
+            console.log("Checking : " + vBtId);
+            $(document).ready(function(){
+                console.log("Checking : " + vBtId);
+                $('.btn-remove').click(function(){
+                    console.log("Checking : " + vBtId);
+                    $(this).closest('tr').remove();
+                });
+
+            });
 
         });
         
-    $('[id^=SynRemoveRel]').click(function(){    
-        console.log("Thanks for removal of this row! " );
-        console.log($(this).id);
-    });
     
 
     $('#SynFreezJSubmit').click(function(){
@@ -460,28 +495,11 @@ $(document).ready(function(){
             valT.push(value.cells[1].innerText);
             valT.push(value.cells[6].innerText);
 
-           /* for(var i=0; i<valT.length; i++){
-                if(valT[i]==value.cells[1].innerText){
-                    break;
-                }else{
-                    valT.push(value.cells[1].innerText);
-                }
-            }
-            for(var i=0; i<valT.length; i++)
-                if(valT[i]!=value.cells[4].innerText){
-                    valT.push(value.cells[4].innerText);
-                }
-            }            
-          /* $('#SynSchFltName').append("<option value='" + value.cells[1].innerHTML + "'>"+value.cells[1].innerHTML+"</option>");
-            $('#SynTabFltName').append("<option value='" + value.cells[2].innerHTML + "'>"+value.cells[2].innerHTML+"</option>");
-            $('#SynSchFltName').append("<option value='" + value.cells[4].innerHTML + "'>"+value.cells[4].innerHTML+"</option>");
-            $('#SynTabFltName').append("<option value='" + value.cells[5].innerHTML + "'>"+value.cells[5].innerHTML+"</option>");
-            */
+           
 
            
         });
 
-        //valTab = jQuery.unique(valT);
         var valTab = valT.filter(function(elem, index, self) {
 
             return index === self.indexOf(elem);
@@ -552,8 +570,22 @@ $(document).ready(function(){
 
     $('#SynSaveFCSubmit').click(function(){
         var k;
-        var table = document.getElementById("SynJoinTab-body");
-                   
+        //var table = document.getElementById("SynJoinTab-body");
+        if( $('#SynSchFltName option:selected').text() == "--Select--"){
+            alert("Please choose a Schema option! ");
+            return false;
+        } 
+        else if($('#SynTabFltName option:selected').text() == "--Select--"){
+            alert("Please choose a Table option! ");
+            return false;
+        }
+        else if($('#SynColFltName option:selected').text() == "--Select--"){
+            alert("Please choose a Column option! ");
+            return false;
+        }
+        else {
+            console.log("Good to go!");
+        }
         
 
         if(!gOpenFilter){
@@ -571,6 +603,15 @@ $(document).ready(function(){
         
         console.log("Entered SynSaveFCSubmit action");
         tableFilterTabOps();
+        $(document).ready(function(){
+            console.log("Checking : " );
+            $('.btn-remove').click(function(){
+                console.log("Checking : " );
+                $(this).closest('tr').remove();
+            });
+
+        });
+
 
     });
 
@@ -648,28 +689,9 @@ $(document).ready(function(){
             data: finalObj,
 
     });
-        /*$.post('/createSyntheticData',finalObj)
-        .done(function(response){
-            console.log(response);
-
-            if (response == "false"){
-                //alert("Better luck next time!");
-                alert("Syn Data Create: Better luck next time!");
-            }
-            else {               
-                alert("Welcome! Your request is submitted.");
-                
-            }
-            console.log("Checking " + finalObj);
-
-        })
-        .fail( function(xhr, textStatus, errorThrown) {
-            alert("Failed to process the request! Error: "+xhr.responseText);
-        });
-        */
+      
         alert("Request sent for processing.");
-        location.reload();
-        //$('#myTabContent').tabs({active:-1});
+        location.reload();        
     });
 
 
@@ -694,13 +716,9 @@ $(document).ready(function(){
         if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
-        //document.getElementById('SynForm').reset();
-
-       // $('#SynForm').trigger("reset");
+             
         location.reload();
         alert("Form reset done!");
-        //$('#tabdiv').tabs({active:-1});
-
     });
 
     $('#SynFreezJReset').click(function(){
@@ -766,7 +784,7 @@ function loadOptions(){
          //contentType: 'application/json',
          success : function(data){
              console.log(data);
-            // var res = $.parseJSON(data);
+            
             $('#fSName').append("<option value='' selected>--Select--</option>");
              $.each(data, function(index, value){
                  console.log(value);
@@ -784,7 +802,7 @@ function loadOptions(){
          //contentType: 'application/json',
          success : function(data){
              console.log(data);
-            // var res = $.parseJSON(data);
+            
             $('#tSName').append("<option value='' selected>--Select--</option>");
              $.each(data, function(index, value){
                  console.log(value);
@@ -802,7 +820,7 @@ function loadOptions(){
          //contentType: 'application/json',
          success : function(data){
              console.log(data);
-            // var res = $.parseJSON(data);
+            
             $('#fDBName').append("<option value='' selected>--Select--</option>");
              $.each(data, function(index, value){
                  console.log(value);
@@ -820,7 +838,7 @@ function loadOptions(){
          //contentType: 'application/json',
          success : function(data){
              console.log(data);
-            // var res = $.parseJSON(data);
+            
             $('#tDBName').append("<option value='' selected>--Select--</option>");
              $.each(data, function(index, value){
                  console.log(value);
@@ -845,7 +863,7 @@ function loadPartition(){
         //contentType: 'application/json',
         success : function(data){
             console.log(data);
-            // var res = $.parseJSON(data);
+            
             $('#Partition').append("<option value='' selected>--Select--</option>");
             $.each(data, function(index, value){
                 console.log(value);
@@ -913,10 +931,14 @@ function loadSyntheticDataPage(){
 function tableJoinTabOps(){
     var table = document.getElementById("SynJoinTab-body");
     var rowCnt = table.rows.length; //Get Number of Existing Rows
+    var BtId;
     console.log(rowCnt + " Row Count");
     row = table.insertRow(rowCnt);
     rremove = row.insertCell(0);
-    rremove.innerHTML = "<button type=\"button\" id=\"SynRemoveRel"+ rowCnt +"\"  class=\"btn btn-primary btn-sm\">Remove</button>";
+    BtId = "SynRemoveRel"+ rowCnt;
+    rremove.innerHTML = "<button type=\"button\" id=\" "+ BtId + "\"  class=\"btn btn-primary btn-sm btn-remove\">Remove</button>";
+
+
     var rschema = row.insertCell(1);
     rschema.innerHTML = $('#SynSchName1 option:selected').text();
     var rtable = row.insertCell(2);
@@ -948,7 +970,7 @@ function tableJoinTabOps(){
     var rMCount = row.insertCell(10);
     rMCount.innerHTML = $('#SynMR').val();
 
-    return true;
+    return BtId;
 
 }
 
@@ -960,7 +982,7 @@ function tableFilterTabOps(){
     console.log(rowCnt + " Row Count");
     row = table.insertRow(rowCnt);
     rremove = row.insertCell(0);
-    rremove.innerHTML = "<button type=\"button\" id=\"SynRemoveFilter"+ rowCnt +"\"  class=\"btn btn-primary btn-sm\">Remove</button>";
+    rremove.innerHTML = "<button type=\"button\" id=\"SynRemoveFilter"+ rowCnt +"\"  class=\"btn btn-primary btn-sm btn-remove\">Remove</button>";
     var rschema = row.insertCell(1);
     rschema.innerHTML = $('#SynSchFltName option:selected').text();
     var rtable = row.insertCell(2);
@@ -969,10 +991,7 @@ function tableFilterTabOps(){
     rcolumn.innerHTML = $('#SynColFltName option:selected').text();
     var rJschema = row.insertCell(4);
     rJschema.innerHTML = $('#SynFC option:selected').text();
-    /*if ($('#SynFC option:selected').text() == "is null"){
-        console.log("Inside #SynFC option:selected");
-        $('#SynFV').hide();
-    } */
+  
     var rJtable = row.insertCell(5);
     rJtable.innerHTML = $('#SynFV').val();
     
