@@ -639,6 +639,7 @@ $(document).ready(function(){
             return false;            
         }
         var finalJoinsArr = [];
+        
         var finalSynArr = [];
         var finalObj ;
         //load the table details of joins and synthetic here into finalJoin and finalSynthetic
@@ -646,7 +647,7 @@ $(document).ready(function(){
             console.log(index + '-> ' + value.cells[1].innerHTML + " " + value.cells[2].innerHTML + " " + value.cells[3].innerHTML + " " + value.cells[5].innerHTML  );            
             console.log(index + '-> ' + value.cells[7].innerHTML + " " + value.cells[8].innerHTML  + " " + value.cells[10].innerHTML  );            
 
-            finalJoin = JSON.stringify({
+            finalJoins = /*JSON.stringify(*/{
                 'Schema1':value.cells[1].innerText,
                 'Table1':value.cells[2].innerText,
                 'Column1':value.cells[3].innerText,
@@ -658,11 +659,16 @@ $(document).ready(function(){
                 'Static2':value.cells[9].innerText,
                 'MaxCount2':value.cells[10].innerText,    
 
-            }); //finalJoins = JSON.stringify                
-            finalJoinsArr.push(finalJoin);
+            }/*)*/; //finalJoins = JSON.stringify                
+            finalJoinsArr.push(finalJoins);
+            console.log(finalJoins);
+            //finalJoinsArr += finalJoin;
         });
+        //finalJoinsArr += ']}';
+        
         console.log(finalJoinsArr);
-
+        finalObj = JSON.stringify(finalJoinsArr);
+        console.log(finalObj);
 
         $('#SynFilterTab-body tr').each(function(index, value){
             console.log(index + '-> ' + value.cells[1].innerHTML + " " + value.cells[2].innerHTML + " " + value.cells[3].innerHTML + " " + value.cells[5].innerHTML  );            
@@ -675,17 +681,16 @@ $(document).ready(function(){
             });
             finalSynArr.push(finalSynthetic);
         });
-        console.log(finalSynArr);
+       // console.log(finalSynArr);
 
-        finalObj = JSON.stringify({
+      /*  finalObj = JSON.stringify({
             'JoinArr':finalJoinsArr,
             'SynArr':finalSynArr
-        });
+        });*/
         $.ajax({
             type: 'POST',
             url: '/createSyntheticData',
-            contentType: 'application/json',
-            dataType: 'json',
+            contentType: 'application/json',            
             data: finalObj,
 
     });

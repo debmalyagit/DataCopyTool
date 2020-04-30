@@ -1,10 +1,10 @@
-package com.example.demo;
+package com.example.model;
 
-import com.example.model.JobDetails;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
 
 import java.io.*;
 import java.text.SimpleDateFormat;

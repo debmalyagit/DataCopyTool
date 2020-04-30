@@ -1,6 +1,9 @@
 package com.example.demo;
 
 import com.example.model.JobDetails;
+import com.example.model.CopyService;
+import com.example.model.CryptoException;
+import com.example.model.CryptoUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +18,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 //import java.util.logging.ConsoleHandler;
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @Component
@@ -266,8 +271,17 @@ public class CopyController {
 
     }
 
-    @PostMapping(path = "/createSyntheticData", consumes = "application/json"/*, produces = "application/json"*/)
-    public ResponseEntity<String> createSyntheticData(@RequestBody String objString){
+    @RequestMapping(value = "/createSyntheticData", method = RequestMethod.POST)
+    @ResponseBody    
+    public ResponseEntity<String> createSyntheticData(@RequestBody List<Map<String, String>> objString){
+        System.out.println("Entered createSyntheticData");
+        System.out.println(objString.toString());
+       
+        //System.out.println(objString);
+        /*for (String str : objString){
+            System.out.println(str);
+        }*/
+/*
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now;
         now=LocalDateTime.now();
@@ -278,6 +292,8 @@ public class CopyController {
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionUtils.getStackTrace(e));
         }
+        */
+        return ResponseEntity.status(HttpStatus.OK).body("true");
     }
 
     //schemas for connect through user

@@ -330,9 +330,10 @@
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="inputGroupSelect01">Schema:</label>
-            </div>
+            </div>            
             <select class="custom-select" id="SynSchName1">
-             <!-- <option selected>Choose...</option>
+             <!--   <input class="custom-search" id="serchfSchema" type="text" placeholder="Search..">
+            <option selected>Choose...</option>
               <option value="1">One</option>
               <option value="2">Two</option>
               <option value="3">Three</option>  -->
