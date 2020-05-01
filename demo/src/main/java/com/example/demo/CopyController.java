@@ -1,6 +1,11 @@
 package com.example.demo;
 
 import com.example.model.JobDetails;
+import com.example.model.SyntheticCriteria;
+import com.example.model.SyntheticDataWrapper;
+import com.example.model.SyntheticJoins;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.model.CopyService;
 import com.example.model.CryptoException;
 import com.example.model.CryptoUtils;
@@ -16,6 +21,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 //import java.util.logging.ConsoleHandler;
 import java.util.Map;
@@ -272,29 +278,47 @@ public class CopyController {
     }
 
     @RequestMapping(value = "/createSyntheticData", method = RequestMethod.POST)
-    @ResponseBody    
-    public ResponseEntity<String> createSyntheticData(@RequestBody List<Map<String, String>> objString){
+    @ResponseBody
+    public ResponseEntity<String> createSyntheticData(@RequestBody String jsonString /*SyntheticDataWrapper syntheticDataWrapper*/){
         System.out.println("Entered createSyntheticData");
-        System.out.println(objString.toString());
-       
-        //System.out.println(objString);
-        /*for (String str : objString){
-            System.out.println(str);
-        }*/
-/*
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now;
-        now=LocalDateTime.now();
-        System.out.println("Start time - "+dtf.format(now));
-        try {
-            System.out.println(objString);
-            return ResponseEntity.status(HttpStatus.OK).body("true");
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionUtils.getStackTrace(e));
-        }
-        */
+         System.out.println(jsonString.toString());
+         
+        // try{
+        //     ObjectMapper objectMapper = new ObjectMapper();
+        //     List<SyntheticJoins> synJoin = Arrays.asList(objectMapper.readValue(synDatWrapper.getSyntheticJoins(),SyntheticJoins[].class));
+        //     System.out.println("Exiting createSyntheticData");
+        // } catch(Exception e){
+        //     System.out.println("Error: " + e.getStackTrace());
+        //     return ResponseEntity.status(HttpStatus.OK).body(e.toString());
+        // }
+            
         return ResponseEntity.status(HttpStatus.OK).body("true");
     }
+
+//     @RequestMapping(value = "/createSyntheticData", method = RequestMethod.POST)
+//     @ResponseBody    
+//     public ResponseEntity<String> createSyntheticData(@RequestBody List<Map<String, String>> objString){
+//         System.out.println("Entered createSyntheticData");
+//         System.out.println(objString.toString());
+       
+//         //System.out.println(objString);
+//         /*for (String str : objString){
+//             System.out.println(str);
+//         }*/
+// /*
+//         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+//         LocalDateTime now;
+//         now=LocalDateTime.now();
+//         System.out.println("Start time - "+dtf.format(now));
+//         try {
+//             System.out.println(objString);
+//             return ResponseEntity.status(HttpStatus.OK).body("true");
+//         }catch (Exception e){
+//             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionUtils.getStackTrace(e));
+//         }
+//         */
+//         return ResponseEntity.status(HttpStatus.OK).body("true");
+//     }
 
     //schemas for connect through user
 }

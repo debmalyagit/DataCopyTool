@@ -667,31 +667,31 @@ $(document).ready(function(){
         //finalJoinsArr += ']}';
         
         console.log(finalJoinsArr);
-        finalObj = JSON.stringify(finalJoinsArr);
-        console.log(finalObj);
+        var syntheticJoins = JSON.stringify(finalJoinsArr);
+        console.log(syntheticJoins);
 
         $('#SynFilterTab-body tr').each(function(index, value){
             console.log(index + '-> ' + value.cells[1].innerHTML + " " + value.cells[2].innerHTML + " " + value.cells[3].innerHTML + " " + value.cells[5].innerHTML  );            
-            finalSynthetic = JSON.stringify({
+            finalSynthetic = {
                 'Schema':value.cells[1].innerText,
                 'Table':value.cells[2].innerText,
                 'Column':value.cells[3].innerText,
                 'Condition':value.cells[4].innerText,
                 'Value':value.cells[5].innerText
-            });
+            };
             finalSynArr.push(finalSynthetic);
         });
-       // console.log(finalSynArr);
-
-      /*  finalObj = JSON.stringify({
-            'JoinArr':finalJoinsArr,
-            'SynArr':finalSynArr
-        });*/
+        console.log(finalSynArr);
+        var syntheticCriteria = JSON.stringify(finalSynArr);
+        console.log(syntheticCriteria);
+        var finalData = '{"SyntheticJoins":' + syntheticJoins + ',"SyntheticCriteria": ' + syntheticCriteria + '}';
+        console.log(finalData);
         $.ajax({
             type: 'POST',
             url: '/createSyntheticData',
             contentType: 'application/json',            
-            data: finalObj,
+            data:finalData,
+            //data: {'jsonString':[finalJoinsArr1,finalSynArr1]},
 
     });
       
