@@ -648,16 +648,16 @@ $(document).ready(function(){
             console.log(index + '-> ' + value.cells[7].innerHTML + " " + value.cells[8].innerHTML  + " " + value.cells[10].innerHTML  );            
 
             finalJoins = /*JSON.stringify(*/{
-                'Schema1':value.cells[1].innerText,
-                'Table1':value.cells[2].innerText,
-                'Column1':value.cells[3].innerText,
-                'Static1':value.cells[4].innerText,
-                'MaxCount1':value.cells[5].innerText,
-                'Schema2':value.cells[6].innerText,
-                'Table2':value.cells[7].innerText,
-                'Column2':value.cells[8].innerText,
-                'Static2':value.cells[9].innerText,
-                'MaxCount2':value.cells[10].innerText,    
+                'schema1':value.cells[1].innerText,
+                'table1':value.cells[2].innerText,
+                'column1':value.cells[3].innerText,
+                'static1':value.cells[4].innerText,
+                'maxCount1':value.cells[5].innerText,
+                'schema2':value.cells[6].innerText,
+                'table2':value.cells[7].innerText,
+                'column2':value.cells[8].innerText,
+                'static2':value.cells[9].innerText,
+                'maxCount2':value.cells[10].innerText,    
 
             }/*)*/; //finalJoins = JSON.stringify                
             finalJoinsArr.push(finalJoins);
@@ -673,18 +673,18 @@ $(document).ready(function(){
         $('#SynFilterTab-body tr').each(function(index, value){
             console.log(index + '-> ' + value.cells[1].innerHTML + " " + value.cells[2].innerHTML + " " + value.cells[3].innerHTML + " " + value.cells[5].innerHTML  );            
             finalSynthetic = {
-                'Schema':value.cells[1].innerText,
-                'Table':value.cells[2].innerText,
-                'Column':value.cells[3].innerText,
-                'Condition':value.cells[4].innerText,
-                'Value':value.cells[5].innerText
+                'schema':value.cells[1].innerText,
+                'table':value.cells[2].innerText,
+                'column':value.cells[3].innerText,
+                'condition':value.cells[4].innerText,
+                'value':value.cells[5].innerText
             };
             finalSynArr.push(finalSynthetic);
         });
         console.log(finalSynArr);
         var syntheticCriteria = JSON.stringify(finalSynArr);
         console.log(syntheticCriteria);
-        var finalData = '{"SyntheticJoins":' + syntheticJoins + ',"SyntheticCriteria": ' + syntheticCriteria + '}';
+        var finalData = '{"SyntheticDataWrapper":{"SyntheticJoins":' + syntheticJoins + ',"SyntheticCriteria": ' + syntheticCriteria + '}}';
         console.log(finalData);
         $.ajax({
             type: 'POST',

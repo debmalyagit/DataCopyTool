@@ -6,6 +6,12 @@ public class SyntheticDataWrapper {
         List<SyntheticJoins> syntheticJoins ;
         List<SyntheticCriteria> syntheticCriteria;
 
+
+        public SyntheticDataWrapper(){}
+        public SyntheticDataWrapper(List<SyntheticJoins> synjn, List<SyntheticCriteria> syncr){
+            this.syntheticJoins = synjn;
+            this.syntheticCriteria = syncr;
+        }
         public List<SyntheticJoins> getSyntheticJoins() {
             return syntheticJoins;
         }
