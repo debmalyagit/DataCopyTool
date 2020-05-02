@@ -9,6 +9,8 @@ var gtPWD;
 var gtDB;
 var gOpenJoin=false;
 var gOpenFilter=false;
+var gJoinFreezed=false;
+var gSCFreezed=false;
 var finalJoins;
 var finalSynthetic;
 
@@ -440,7 +442,10 @@ $(document).ready(function(){
             else {
                 console.log("Good to proceed!");
             }
-    
+            if(!validateJoins()){
+                return false;
+            }
+
             if(!gOpenJoin){
                 console.log("Entered gOpenJoin");
                 for(k=8;k<=10;k++){
@@ -464,7 +469,11 @@ $(document).ready(function(){
                 console.log("Checking : " + vBtId);
                 $('.btn-remove').click(function(){
                     console.log("Checking : " + vBtId);
-                    $(this).closest('tr').remove();
+                    if(!gJoinFreezed){
+                        $(this).closest('tr').remove();
+                        checkTableRows();
+                    }
+                    
                 });
 
             });
@@ -494,10 +503,6 @@ $(document).ready(function(){
             console.log(index + '-> ' + value.cells[6].innerHTML );
             valT.push(value.cells[1].innerText);
             valT.push(value.cells[6].innerText);
-
-           
-
-           
         });
 
         var valTab = valT.filter(function(elem, index, self) {
@@ -512,7 +517,7 @@ $(document).ready(function(){
             $('#SynSchFltName').append("<option value='" + index + "'>"+ value1 +"</option>");
             console.log(value1 + " " + value1.length );
         });
-
+        gJoinFreezed = true;
 
         $('#SynFreezJSubmit').hide();
     });
@@ -607,9 +612,11 @@ $(document).ready(function(){
             console.log("Checking : " );
             $('.btn-remove').click(function(){
                 console.log("Checking : " );
-                $(this).closest('tr').remove();
+                if(!gSCFreezed){
+                    $(this).closest('tr').remove();
+                    checkTableRows();
+                }                
             });
-
         });
 
 
@@ -629,6 +636,7 @@ $(document).ready(function(){
         for (l=19;l<=20;l++){
             $('#SynRow'+l).show();
         }
+        gSCFreezed = true;
         $('#SynFreezeFCSubmit').hide();
 
 
@@ -691,22 +699,23 @@ $(document).ready(function(){
             url: '/createSyntheticData',
             contentType: 'application/json',            
             data:finalData,
-            //data: {'jsonString':[finalJoinsArr1,finalSynArr1]},
-
-    });
+        });
       
         alert("Request sent for processing.");
-        location.reload();        
+        location.reload();  
+        console.log("Reached");
+        $( "#myTabContent" ).tabs({ active: 3 });      
     });
 
 
     $('#SynFC').click(function(){
-        if ($('#SynFC option:selected').text() == "is null"){
+        if ($('#SynFC option:selected').text() == "random"){
             console.log("Inside #SynFC option:selected");
-            $('#SynFV').hide();
             $('#SynFV').val = '';
             $('#SynFV').value = '';
             $('#SynFV').text = '';
+            $('#SynFV').hide();
+            
         } else{
             console.log("Inside #SynFV show");
             $('#SynFV').show();
@@ -722,7 +731,9 @@ $(document).ready(function(){
             return false;            
         }
              
-        location.reload();
+        location.reload();  
+        console.log("Reached");
+        $( "#myTabContent" ).tabs({ active: 3 });      
         alert("Form reset done!");
     });
 
@@ -730,33 +741,34 @@ $(document).ready(function(){
         if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
-        location.reload();
+        location.reload();  
+        console.log("Reached");
+        $( "#myTabContent" ).tabs({ active: 3 });      
     })
 
     $('#SynJoinReset').click(function(){
         if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
-        location.reload();
+        location.reload();            
     });
 
     $('#SynSaveFCReset').click(function(){
         if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
-        location.reload();
+        location.reload();              
     });
 
     $('#SynFreezeFCReset').click(function(){
         if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
-        location.reload();
+        location.reload();  
+        console.log("Reached");
+        $( "#myTabContent" ).tabs({ active: 3 });      
 
-    });
-
-    
-    
+    });   
 
 });
 
@@ -1004,3 +1016,32 @@ function tableFilterTabOps(){
     return true;
 
 }   
+
+function checkTableRows(){
+    
+    if($('#SynFilterTab >tbody >tr').length <= 0){
+        for(k=16;k<=18;k++){
+            $('#SynRow' + k).hide();
+        }  
+        gOpenFilter=false;
+    }
+    
+    if($('#SynJoinTab >tbody >tr').length <= 0){
+        for(k=8;k<=10;k++){
+            $('#SynRow' + k).hide();
+        }
+        gOpenJoin = false;
+    }
+    return true;    
+}
+
+function validateJoins(){
+    if($('#SynSchName1 option:selected').text() == $('#SynSchName2 option:selected').text()
+    && $('#SynTabName1 option:selected').text() == $('#SynTabName2 option:selected').text()
+    && $('#SynColName1 option:selected').text() == $('#SynColName2 option:selected').text()){
+        alert("Joins with same attributes on both sides not permissible! Please modify join condition.");
+        return false;
+    }
+
+    return true;
+}

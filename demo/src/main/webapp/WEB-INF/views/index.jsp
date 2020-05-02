@@ -288,9 +288,6 @@
               </div>
               <select class="custom-select" id="SynDBNameCon">
                 <option selected>Choose...</option>
-               <!-- <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option> -->
               </select>
             </div> <!--class="input-group mb-3"-->
           </div> <!--div class="col"-->  
@@ -331,12 +328,7 @@
             <div class="input-group-prepend">
               <label class="input-group-text" for="inputGroupSelect01">Schema:</label>
             </div>            
-            <select class="custom-select" id="SynSchName1">
-             <!--   <input class="custom-search" id="serchfSchema" type="text" placeholder="Search..">
-            <option selected>Choose...</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>  -->
+            <select class="custom-select" id="SynSchName1">           
             </select>
           </div> <!--class="input-group mb-3"-->
         </div> <!--div class="col"-->
@@ -357,10 +349,7 @@
               <label class="input-group-text" for="inputGroupSelect01">Column:</label>
             </div>
             <select class="custom-select" id="SynColName1">
-              <option selected>Choose...</option>
-            <!--  <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option> -->
+              <option selected>Choose...</option>           
             </select>
           </div> <!--class="input-group mb-3"-->
         </div>          <!--div class="col"-->
@@ -393,10 +382,7 @@
               <label class="input-group-text" for="inputGroupSelect01">Related Schema:</label>
             </div>
             <select class="custom-select" id="SynSchName2">
-              <option selected>Choose...</option>
-            <!--  <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>  -->
+              <option selected>Choose...</option>            
             </select>
           </div> <!--class="input-group mb-3"-->
         </div> <!--div class="col"-->
@@ -406,10 +392,7 @@
               <label class="input-group-text" for="inputGroupSelect01">Related Table:</label>
             </div>
             <select class="custom-select" id="SynTabName2">
-              <option selected>Choose...</option>
-         <!--     <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>  -->
+              <option selected>Choose...</option>     
             </select>
           </div> <!--class="input-group mb-3"-->
         </div> <!--div class="col"-->
@@ -419,10 +402,7 @@
               <label class="input-group-text" for="inputGroupSelect01">Related Column:</label>
             </div>
             <select class="custom-select" id="SynColName2">
-              <option selected>Choose...</option>
-            <!--  <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option> -->
+              <option selected>Choose...</option>         
             </select>
           </div> <!--class="input-group mb-3"-->
         </div>          <!--div class="col"-->
@@ -450,7 +430,7 @@
       <div class="row" id="SynRow7"> 
         <div class="col-4"></div>   
         <div class="col">
-          <button type="button" id="SynJoinSubmit"  class="btn btn-primary btn-sm">Save Relation</button>
+          <button type="button" id="SynJoinSubmit"  class="btn btn-primary btn-sm">Save Joins</button>
         </div> <!--div class="col"-->`
         <div class="col-4">
           <button type="button" id="SynJoinReset"  class="btn btn-primary btn-sm">Reset</button>
@@ -505,9 +485,6 @@
             </div>
             <select class="custom-select" id="SynSchFltName">
               <option selected>Choose...</option>
-            <!--  <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>  -->
             </select>
           </div> <!--class="input-group mb-3"-->
         </div> <!--div class="col"-->
@@ -518,9 +495,6 @@
             </div>
             <select class="custom-select" id="SynTabFltName">
               <option selected>Choose...</option>
-            <!--  <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option> -->
             </select>
           </div> <!--class="input-group mb-3"-->
         </div> <!--div class="col"-->        
@@ -534,9 +508,6 @@
             </div>
             <select class="custom-select" id="SynColFltName">
               <option selected>Choose...</option>
-        <!--      <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>  -->
             </select>
           </div> <!--class="input-group mb-3"-->
         </div> <!--div class="col"-->
@@ -546,8 +517,7 @@
               <label class="input-group-text" for="inputGroupSelect01">Synthetic Criteria:</label>
             </div>
             <select class="custom-select" id="SynFC">
-              <option selected>Choose...</option>
-              <option value="eq">=</option>
+              <option selected>Choose...</option>              
               <option value="static">static</option>
               <option value="inc">incremental</option>
               <option value="random">random</option>             
