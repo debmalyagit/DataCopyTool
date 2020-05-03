@@ -602,13 +602,7 @@
         -->
       </form> <!--form id="SynForm"-->
     </div> <!--Synthetic Data Creation  -->
-
-
-
   </div>
-
-
-
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -622,7 +616,4 @@
   <script type="text/javascript" src="/resources/js/copyDB.js"></script>
 
 </body>
-
-
-
 </html>

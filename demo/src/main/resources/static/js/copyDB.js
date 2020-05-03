@@ -655,7 +655,7 @@ $(document).ready(function(){
             console.log(index + '-> ' + value.cells[1].innerHTML + " " + value.cells[2].innerHTML + " " + value.cells[3].innerHTML + " " + value.cells[5].innerHTML  );            
             console.log(index + '-> ' + value.cells[7].innerHTML + " " + value.cells[8].innerHTML  + " " + value.cells[10].innerHTML  );            
 
-            finalJoins = /*JSON.stringify(*/{
+            finalJoins = {
                 'schema1':value.cells[1].innerText,
                 'table1':value.cells[2].innerText,
                 'column1':value.cells[3].innerText,
@@ -667,10 +667,10 @@ $(document).ready(function(){
                 'static2':value.cells[9].innerText,
                 'maxCount2':value.cells[10].innerText,    
 
-            }/*)*/; //finalJoins = JSON.stringify                
+            }; 
             finalJoinsArr.push(finalJoins);
             console.log(finalJoins);
-            //finalJoinsArr += finalJoin;
+            
         });
         //finalJoinsArr += ']}';
         
@@ -679,13 +679,14 @@ $(document).ready(function(){
         console.log(syntheticJoins);
 
         $('#SynFilterTab-body tr').each(function(index, value){
-            console.log(index + '-> ' + value.cells[1].innerHTML + " " + value.cells[2].innerHTML + " " + value.cells[3].innerHTML + " " + value.cells[5].innerHTML  );            
+          
+            console.log(index + '-> ' + value.cells[1].innerHTML + " " + value.cells[2].innerHTML + " " + value.cells[3].innerHTML + " " + value.cells[5].innerHTML );            
             finalSynthetic = {
                 'schema':value.cells[1].innerText,
                 'table':value.cells[2].innerText,
                 'column':value.cells[3].innerText,
                 'condition':value.cells[4].innerText,
-                'value':value.cells[5].innerText
+                'value':value.cells[5].innerHTML
             };
             finalSynArr.push(finalSynthetic);
         });
@@ -702,38 +703,44 @@ $(document).ready(function(){
         });
       
         alert("Request sent for processing.");
+        
         location.reload();  
         console.log("Reached");
-        $( "#myTabContent" ).tabs({ active: 3 });      
+            
     });
 
+    $('#SynFV').focus(function(){
+        $(this).val = "";
+        $(this).value = "";
+    });
 
-    $('#SynFC').click(function(){
-        if ($('#SynFC option:selected').text() == "random"){
-            console.log("Inside #SynFC option:selected");
-            $('#SynFV').val = '';
-            $('#SynFV').value = '';
-            $('#SynFV').text = '';
-            $('#SynFV').hide();
+    /*$('#SynFC').change(function(){
+        console.log($('#SynFC option:selected').value + ' : ' + $('#SynFC option:selected').text());
+        if ($('#SynFC option:selected').text() == 'random'){
+           console.log("Inside #SynFC option:selected");   
+           $('#SynFV').focus();         
+           $('#SynFV').text = "";
+           $('#SynFV').value = "";
+           
             
         } else{
             console.log("Inside #SynFV show");
-            $('#SynFV').show();
-            $('#SynFV').val = '';
-            $('#SynFV').value = '';
             $('#SynFV').text = '';
+            $('#SynFV').value = '';
+            $('#SynFV').show();
+            $('#SynFV').focus();
         }
 
-    });
+    });*/
     
     $('#SynFinalReset').click(function(){
         if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
-             
+        
         location.reload();  
         console.log("Reached");
-        $( "#myTabContent" ).tabs({ active: 3 });      
+             
         alert("Form reset done!");
     });
 
@@ -741,15 +748,17 @@ $(document).ready(function(){
         if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
+        
         location.reload();  
         console.log("Reached");
-        $( "#myTabContent" ).tabs({ active: 3 });      
+             
     })
 
     $('#SynJoinReset').click(function(){
         if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
+        
         location.reload();            
     });
 
@@ -757,6 +766,7 @@ $(document).ready(function(){
         if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
+        
         location.reload();              
     });
 
@@ -764,9 +774,10 @@ $(document).ready(function(){
         if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
+        
         location.reload();  
         console.log("Reached");
-        $( "#myTabContent" ).tabs({ active: 3 });      
+             
 
     });   
 
@@ -994,9 +1005,15 @@ function tableJoinTabOps(){
 
 
 function tableFilterTabOps(){
+    if (!validateDuplicateSynCriteria()) {
+        console.log("Duplicate Synthetic Criteria found.");
+        return false;
+    }
     var table = document.getElementById("SynFilterTab-body");
     var rowCnt = table.rows.length; //Get Number of Existing Rows
     console.log(rowCnt + " Row Count");
+   
+
     row = table.insertRow(rowCnt);
     rremove = row.insertCell(0);
     rremove.innerHTML = "<button type=\"button\" id=\"SynRemoveFilter"+ rowCnt +"\"  class=\"btn btn-primary btn-sm btn-remove\">Remove</button>";
@@ -1008,13 +1025,29 @@ function tableFilterTabOps(){
     rcolumn.innerHTML = $('#SynColFltName option:selected').text();
     var rJschema = row.insertCell(4);
     rJschema.innerHTML = $('#SynFC option:selected').text();
-  
     var rJtable = row.insertCell(5);
-    rJtable.innerHTML = $('#SynFV').val();
-    
-
+    if ($('#SynFC option:selected').text() != 'random'){        
+        rJtable.innerHTML = $('#SynFV').val();
+    }
+    else {
+        rJtable.innerHTML = '';
+        $('#SynFV').text = "";
+    }
     return true;
+}
+    
+function validateDuplicateSynCriteria(){
+    var lopt = true;
+    $('#SynFilterTab-body tr').each(function(index, value){
+        if ( $('#SynSchFltName option:selected').text() == value.cells[1].innerText  
+        &&   $('#SynTabFltName option:selected').text() == value.cells[2].innerText   
+        && $('#SynColFltName option:selected').text() == value.cells[3].innerText) {
+            alert("You have already selected criteria for this exact column. You may remove the previous entry and re-enter!");
+            lopt = false;
+        }               
+    });
 
+    return lopt;
 }   
 
 function checkTableRows(){
