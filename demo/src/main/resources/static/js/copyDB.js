@@ -16,7 +16,7 @@ var finalSynthetic;
 
 $(document).ready(function(){
     console.log('document is loaded');
-   
+       
     
     $('#headingTwo').click(function(){
         $('#collapseTwo').toggle();
@@ -222,6 +222,8 @@ $(document).ready(function(){
                  tAuthFlag=false;
               $('#collapseTwo').toggle();
                  $('#collapseOne').toggle();
+                       
+                
                            
     });
 
@@ -265,8 +267,17 @@ $(document).ready(function(){
                 $('#SynAuthSubCon').prop('disabled', true);
             }
         });
-
         
+        $('#SynPassCon').keydown(function(event){
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+                console.log("Authenticate request submitted!");                  
+                $('#SynAuthSubCon').click();                
+            }            
+            event.stopPropagation();
+        });    
+        
+            
 
         $('#SynAuthSubCon').click(function(){
             console.log("Entered SynAuthSubCon Login button");
@@ -293,7 +304,7 @@ $(document).ready(function(){
                     }
                     alert("Welcome! You are authenticated to : " + fSName);
                     $('#SynPassCon').val = '';
-                    
+                    $('#SynUsrCon').val = '';
                     
                     for(i=4;i<=7;i++){
                         $('#SynRow' + i).show();
@@ -310,6 +321,7 @@ $(document).ready(function(){
                             $('#SynSchName1').append("<option value='" + value + "'>"+value+"</option>");
                             $('#SynSchName2').append("<option value='" + value + "'>"+value+"</option>");
                         });
+                        $('#SynAuthSubCon').prop('disabled', true);
 
                     })
                     .fail( function(xhr, textStatus, errorThrown) {
@@ -704,7 +716,9 @@ $(document).ready(function(){
       
         alert("Request sent for processing.");
         
-        location.reload();  
+        document.getElementById("SynForm").reset();
+        $('#dashboard-tab').tab('show');
+
         console.log("Reached");
             
     });
@@ -714,31 +728,41 @@ $(document).ready(function(){
         $(this).value = "";
     });
 
-    /*$('#SynFC').change(function(){
-        console.log($('#SynFC option:selected').value + ' : ' + $('#SynFC option:selected').text());
+    $('#SynFC').change(function(){
+        console.log($('#SynFC option:selected').text() + ' : ' + $('#SynFC option:selected').text());
         if ($('#SynFC option:selected').text() == 'random'){
-           console.log("Inside #SynFC option:selected");   
-           $('#SynFV').focus();         
-           $('#SynFV').text = "";
-           $('#SynFV').value = "";
-           
+           console.log("Inside #SynFC option:selected");           
+           $('#SynFV').val = '';
+           $('#SynFV').prop('disabled',true);
+           $('#SynSaveFCSubmit').focus();          
             
         } else{
             console.log("Inside #SynFV show");
-            $('#SynFV').text = '';
-            $('#SynFV').value = '';
-            $('#SynFV').show();
+            $('#SynFV').prop('disabled',false);
+            $('#SynFV').val = '';
             $('#SynFV').focus();
         }
 
-    });*/
+    });
     
+    $('#SynFV').keydown(function(event){
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+            console.log("Save Synthetic Criteria!");
+            $('#SynSaveFCSubmit').prop('disabled',false);
+            $('#SynSaveFCSubmit').click();
+        }        
+        event.stopPropagation();
+    });
+
     $('#SynFinalReset').click(function(){
         if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
         
-        location.reload();  
+        document.getElementById("SynForm").reset();
+        synReset();
+        
         console.log("Reached");
              
         alert("Form reset done!");
@@ -749,33 +773,37 @@ $(document).ready(function(){
             return false;            
         }
         
-        location.reload();  
+        document.getElementById("SynForm").reset();
+        synReset();
         console.log("Reached");
              
     })
 
     $('#SynJoinReset').click(function(){
-        if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
+        if(!confirm("This activity will clear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
-        
-        location.reload();            
+        console.log("Reached SynJoinReset");      
+        document.getElementById("SynForm").reset();
+        synReset();
     });
 
     $('#SynSaveFCReset').click(function(){
-        if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
+        if(!confirm("This activity will clear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
         
-        location.reload();              
+        document.getElementById("SynForm").reset();  
+        synReset();     
     });
 
     $('#SynFreezeFCReset').click(function(){
-        if(!confirm("This activity will cllear the whole form data. Are you sure to reset the form?")){
+        if(!confirm("This activity will clear the whole form data. Are you sure to reset the form?")){
             return false;            
         }
         
-        location.reload();  
+        document.getElementById("SynForm").reset(); 
+        synReset();
         console.log("Reached");
              
 
@@ -1075,6 +1103,28 @@ function validateJoins(){
         alert("Joins with same attributes on both sides not permissible! Please modify join condition.");
         return false;
     }
+
+    return true;
+}
+
+function synReset(){
+    gOpenJoin=false;
+    gOpenFilter=false;
+    gJoinFreezed=false;
+    gSCFreezed=false;
+    $('#SynFreezJSubmit').show();
+    $('#SynSaveFCSubmit').prop('disabled',false);
+    $('#SynFreezeFCSubmit').show();
+    for(i=1;i<=3;i++){
+        $('#SynRow' + i).show();
+    }
+
+    for(i=4;i<=21;i++){
+        $('#SynRow' + i).hide();
+    }
+
+    $('#SynJoinTab-body > tr').remove();
+    $('#SynFilterTab-body > tr').remove();
 
     return true;
 }

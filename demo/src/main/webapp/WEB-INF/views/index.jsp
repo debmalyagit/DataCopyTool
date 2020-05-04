@@ -524,10 +524,10 @@
             </select>
           </div> <!--class="input-group mb-3"-->
         </div>          <!--div class="col"-->        
-        <div class="col-4">
+        <div class="col-4" id="SynFVCol">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="basic-addon1">Filter Value:</span>
+              <span class="input-group-text" id="basic-addon1">Synthetic Value:</span>
             </div>
             <input type="text" id="SynFV" class="form-control" placeholder="Filter Value" aria-label="FilterValue" aria-describedby="basic-addon1">
           </div>
