@@ -1,8 +1,7 @@
 package com.example.model;
 
 import org.apache.poi.ss.usermodel.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+
 import org.springframework.stereotype.Component;
 
 
@@ -13,17 +12,16 @@ import java.util.*;
 @Component
 public class CopyService {
 
-    String excelFilePath = "E:\\Git\\DataCopyTool\\Job_Details.xlsx";
-    String dmpFilePath = "E:\\Git\\DataCopyTool\\";
-
+    String dmpFilePath = System.getenv("DCT_HOME");
+    String excelFilePath = dmpFilePath + "\\Job_Details.xlsx";
+    String oraPath = System.getenv("ORACLE_HOME");
+    
     Workbook wb;
     Properties configProp = new Properties();
     InputStream in = this.getClass().getClassLoader().getResourceAsStream("application.properties");
     String value;
     String message;
-    @Autowired
-    private Environment env;
-    
+       
     public Integer writeToFile(String fromDB, String fromSchName, String toDB, String toSchName, String tableName, String copyType){
         int jobId=0;
         try{
@@ -67,23 +65,23 @@ public class CopyService {
         Process p = null;
         ProcessBuilder builder1 = null;
         if(copyType.equalsIgnoreCase("TC")){
-            builder1 = new ProcessBuilder(env.getProperty("ORACLE_HOME") + "\\BIN\\exp",
+            builder1 = new ProcessBuilder(oraPath + "\\BIN\\exp",
                     user+"/"+user+"@"+fromDb, "tables="+tableName, "file="+jobId+".dmp", "direct=y", "log="+jobId+"_export.txt");
         }else if(copyType.equalsIgnoreCase("PC")){
-            builder1 = new ProcessBuilder(env.getProperty("ORACLE_HOME") + "\\BIN\\exp",
+            builder1 = new ProcessBuilder(oraPath + "\\BIN\\exp",
                     user+"/"+user+"@"+fromDb, "tables="+tableName+":"+partition, "file="+jobId+".dmp", "direct=y", "log="+jobId+"_export.txt");
         }else if(copyType.equalsIgnoreCase("CC")){
-            Formatter x= new Formatter("E:\\Git\\DataCopyTool\\copy.par");
+            Formatter x= new Formatter(dmpFilePath + "\\copy.par");
             x.format("tables="+tableName);
             x.format(" file="+jobId+".dmp");
             x.format(" log="+jobId+"_export.txt");
             x.format(" query="+textArea);
             x.close();
-            builder1 = new ProcessBuilder(env.getProperty("ORACLE_HOME") + "\\BIN\\exp",
+            builder1 = new ProcessBuilder(oraPath + "\\BIN\\exp",
                     user+"/"+user+"@"+fromDb, "parfile=copy.par");
         }
-        builder1.directory(new File("E:\\Git\\DataCopyTool\\"));
-        builder1.environment().put("ORACLE_HOME", env.getProperty("ORACLE_HOME"));
+        builder1.directory(new File(dmpFilePath));
+        builder1.environment().put("ORACLE_HOME", oraPath);
         builder1.environment().put("PATH", "%ORACLE_HOME%\\BIN;%PATH%");
 
         builder1.redirectErrorStream(true);
@@ -128,10 +126,10 @@ public class CopyService {
             Cell cell3 = firstSheet.getRow(jobId).getCell(11);
             Cell cell = firstSheet.getRow(jobId).getCell(9);
             Process p = null;
-            ProcessBuilder builder1 = new ProcessBuilder(env.getProperty("ORACLE_HOME") + "\\BIN\\imp", toSch+"/"+toSch+"@"+toDB, "file="+jobId+".dmp",
+            ProcessBuilder builder1 = new ProcessBuilder(oraPath + "\\BIN\\imp", toSch+"/"+toSch+"@"+toDB, "file="+jobId+".dmp",
                     "full=y", "log="+jobId+"_import.txt", "ignore=y");
-            builder1.directory(new File("E:\\Git\\DataCopyTool\\"));
-            builder1.environment().put("ORACLE_HOME", env.getProperty("ORACLE_HOME") );
+            builder1.directory(new File(dmpFilePath));
+            builder1.environment().put("ORACLE_HOME", oraPath );
             builder1.environment().put("PATH", "%ORACLE_HOME%\\BIN;%PATH%");
             builder1.redirectErrorStream(true);
             p = builder1.start();
@@ -239,7 +237,7 @@ public class CopyService {
         //InputStream in = this.getClass().getClassLoader().getResourceAsStream("application.properties");
         try {
             configProp.load(in);
-            value = configProp.getProperty(key);
+            value = System.getenv(key); //configProp.getProperty(key);
             valueSeperated=value.split(",");
             for(String s: valueSeperated){
                 valueList.add(s);

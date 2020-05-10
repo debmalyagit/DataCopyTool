@@ -36,6 +36,8 @@ public class CopyController {
     Connection conFromDb, conToDb, connThrough;
     String fromUser, connThroughUser;
 
+    String dctPath = System.getenv("DCT_HOME");
+
     @Autowired
     CopyService copyService;
 
@@ -64,9 +66,9 @@ public class CopyController {
         int jobId;
         try {
             jobId = copyService.writeToFile(jobDetails.getFromDB(), jobDetails.getFromSchName(), jobDetails.getToDB(), jobDetails.getToSchName(), jobDetails.getTableName(), jobDetails.getCopyType());
-            inputFile = new File("D:\\Vishakha\\Files\\"+jobId+".dmp");
-            encryptedFile = new File("D:\\Vishakha\\Files\\"+jobId+".encrypted");
-            decryptedFile = new File("D:\\Vishakha\\Files\\"+jobId+".decrypted");
+            inputFile = new File(dctPath +jobId+".dmp");
+            encryptedFile = new File(dctPath +jobId+".encrypted");
+            decryptedFile = new File(dctPath +jobId+".decrypted");
             copyService.export(jobDetails.getFromSchName(), jobDetails.getFromPWD(), jobDetails.getFromDB(), jobDetails.getTableName(), jobId, jobDetails.getCopyType(), jobDetails.getPartition(), jobDetails.getTextArea());
             /*CryptoUtils.encrypt(key, inputFile, encryptedFile);
             CryptoUtils.decrypt(key, encryptedFile, decryptedFile);*/
@@ -83,13 +85,20 @@ public class CopyController {
     }
     @GetMapping(value = "/getSrcDBName", produces = "application/json")
     public ResponseEntity<List<String>> getSrcDBName() {
-        List<String> js1 = new ArrayList<String>();
+        /* List<String> js1 = new ArrayList<String>();
         try {
             js1.add("UAT");
             js1.add("INT");
             js1.add("BAT");        
             return ResponseEntity.status(HttpStatus.OK).body(js1);
         }catch(Exception e){
+            return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+        } */
+        List<String> js1 = new ArrayList<String>();
+        try {
+            js1 = copyService.getValues("DCT_DBNAMES");
+            return ResponseEntity.status(HttpStatus.OK).body(js1);
+        } catch (Exception e) {
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -98,6 +107,13 @@ public class CopyController {
     @GetMapping(value="/getSchName", produces = "application/json")
     public ResponseEntity<List<String>> getAllDBSchemas(){
         List<String> schemaList = new ArrayList<String>();
+        try {
+            schemaList = copyService.getValues("DCT_SCHEMAS");
+            return ResponseEntity.status(HttpStatus.OK).body(schemaList);
+        } catch (Exception e) {
+            return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+       /*  List<String> schemaList = new ArrayList<String>();
         try{
             schemaList.add("TRD");
             schemaList.add("COVID");
@@ -105,7 +121,7 @@ public class CopyController {
             return ResponseEntity.status(HttpStatus.OK).body(schemaList);
         }catch(Exception e){
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        } */
     }
 
     @GetMapping(value="/getTabName", produces = "application/json")
