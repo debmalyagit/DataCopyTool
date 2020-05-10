@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import java.io.File;
@@ -23,9 +25,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Iterator;
 
-@RestController
+@Controller
 @Component
 public class CopyController {
     String key = "Mary has one cat";
@@ -37,16 +40,26 @@ public class CopyController {
     String fromUser, connThroughUser;
 
     String dctPath = System.getenv("DCT_HOME");
-
+    /* CopyController(){
+        System.out.println("Reached CopyController!");
+    } */
     @Autowired
     CopyService copyService;
 
-    @RequestMapping("/login")
-    public ModelAndView firstPage(){
+    //@RequestMapping("/login")
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ModelAndView index(){
+        System.out.println("Reached index!");
         ModelAndView mv = new ModelAndView();
         mv.setViewName("index");
         return mv;
     }
+    /* public String index(Map<String, Object> model) {
+        //model.put("message", this.message);
+        System.out.println("Reached welcome!");
+		return "index";
+	}  */
+    
     @GetMapping(value="/getAllData", produces = "application/json")
     public ResponseEntity<List<JobDetails>> getAllJobDetails(){
         List<JobDetails> jobDetailsList = new ArrayList<JobDetails>();

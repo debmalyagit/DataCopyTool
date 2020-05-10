@@ -7,3 +7,7 @@ INFO  skipping build import with status 'Requested'
 INFO  shutting down Metals
 INFO  started: Metals version 0.8.4 in workspace 'E:\Git\DataCopyTool\demo'
 INFO  time: initialize in 1.2s
+2020.05.10 19:34:14 INFO  started: Metals version 0.9.0 in workspace 'E:\Git\DataCopyTool\demo'
+2020.05.10 19:34:16 INFO  time: initialize in 1.19s
+2020.05.10 19:34:22 INFO  skipping build import with status 'Requested'
+2020.05.10 20:25:49 INFO  shutting down Metals

@@ -42,7 +42,14 @@ $(document).ready(function(){
             $('#Qry').show();
         }
     });
-
+    /* $('#fPWD').keydown(function(event){
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+            console.log("Authenticate source db request submitted!");                  
+            $('#fAuth').click();                
+        }            
+        event.stopPropagation();
+    });     */
 
     $('#fAuth').click(function(){
 
@@ -91,6 +98,15 @@ $(document).ready(function(){
         }
 
     });
+
+    /* $('#tPWD').keydown(function(event){
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+            console.log("Authenticate target db request submitted!");                  
+            $('#tAuth').click();                
+        }            
+        event.stopPropagation();
+    });     */
 
     $('#tAuth').click(function(){
 
