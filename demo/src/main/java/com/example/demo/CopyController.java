@@ -7,7 +7,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import oracle.jdbc.OracleCallableStatement;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
+import oracle.sql.STRUCT;
+import oracle.sql.StructDescriptor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,16 +21,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
+
 
 @Controller
 @Component
@@ -35,67 +43,70 @@ public class CopyController {
     File inputFile;
     File encryptedFile;
     File decryptedFile;
-
+    private static final Logger logger = LoggerFactory.getLogger(CopyController.class);
     Connection conFromDb, conToDb, connThrough;
-    String fromUser, connThroughUser;
+    String fromUser, connThroughUser, connectThroughDb, fromSid, toSid;
 
     String dctPath = System.getenv("DCT_HOME");
-    /* CopyController(){
-        System.out.println("Reached CopyController!");
-    } */
+  
     @Autowired
     CopyService copyService;
 
-    //@RequestMapping("/login")
+    
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(){
         System.out.println("Reached index!");
+        logger.info("Reached index start.");
         ModelAndView mv = new ModelAndView();
         mv.setViewName("index");
         return mv;
-    }
-    /* public String index(Map<String, Object> model) {
-        //model.put("message", this.message);
-        System.out.println("Reached welcome!");
-		return "index";
-	}  */
+    } 
     
-    @GetMapping(value="/getAllData", produces = "application/json")
-    public ResponseEntity<List<JobDetails>> getAllJobDetails(){
+    @GetMapping(value = "/getAllData", produces = "application/json")
+    public ResponseEntity<List<JobDetails>> getAllJobDetails() {
         List<JobDetails> jobDetailsList = new ArrayList<JobDetails>();
-        try{
-            jobDetailsList=copyService.readFromFile();
+        try {
+            jobDetailsList = copyService.readFromFile();
             return ResponseEntity.status(HttpStatus.OK).body(jobDetailsList);
-        }catch(Exception e){
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e.getStackTrace());
             return (ResponseEntity<List<JobDetails>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @PostMapping(path = "/copyData", consumes = "application/json"/*, produces = "application/json"*/)
-    public ResponseEntity<String> copy(@RequestBody JobDetails jobDetails){
+    public ResponseEntity<String> copy(@RequestBody JobDetails jobDetails) throws SQLException {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         LocalDateTime now;
-        now=LocalDateTime.now();
-        System.out.println("Start time - "+dtf.format(now));
+        now = LocalDateTime.now();
+        System.out.println("Start time - " + dtf.format(now));
+        logger.info("Start time - " + dtf.format(now));
         int jobId;
         try {
             jobId = copyService.writeToFile(jobDetails.getFromDB(), jobDetails.getFromSchName(), jobDetails.getToDB(), jobDetails.getToSchName(), jobDetails.getTableName(), jobDetails.getCopyType());
             inputFile = new File(dctPath +jobId+".dmp");
             encryptedFile = new File(dctPath +jobId+".encrypted");
             decryptedFile = new File(dctPath +jobId+".decrypted");
-            copyService.export(jobDetails.getFromSchName(), jobDetails.getFromPWD(), jobDetails.getFromDB(), jobDetails.getTableName(), jobId, jobDetails.getCopyType(), jobDetails.getPartition(), jobDetails.getTextArea());
+            copyService.export(jobDetails.getFromSchName(), jobDetails.getFromPWD(), jobDetails.getFromDB(), jobDetails.getTableName(), jobId, jobDetails.getCopyType(), jobDetails.getPartition(), jobDetails.getTextArea(), fromSid);
             /*CryptoUtils.encrypt(key, inputFile, encryptedFile);
             CryptoUtils.decrypt(key, encryptedFile, decryptedFile);*/
-            copyService.importData(jobDetails.getToSchName(), jobDetails.getToPWD(), jobDetails.getToDB(), jobId);
-          //  CryptoUtils.encrypt(key, inputFile, encryptedFile);
-          //  copyService.deleteFile(jobId);
-            now=LocalDateTime.now();
-            System.out.println("End time - "+dtf.format(now));
+            copyService.importData(jobDetails.getToSchName(), jobDetails.getToPWD(), jobDetails.getToDB(), jobId, toSid);
+            CryptoUtils.encrypt(key, inputFile, encryptedFile);
+            copyService.deleteFile(jobId);
+            now = LocalDateTime.now();
+            System.out.println("End time - " + dtf.format(now));
             return ResponseEntity.status(HttpStatus.OK).body("true");
-        }
-        catch (Exception e){
+        } catch (CryptoException e) {
+            logger.error(e.getMessage(),e.getStackTrace());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionUtils.getStackTrace(e));
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e.getStackTrace());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionUtils.getStackTrace(e));
+        } finally {
+            conFromDb.close();
+            conToDb.close();
         }
     }
+    
     @GetMapping(value = "/getSrcDBName", produces = "application/json")
     public ResponseEntity<List<String>> getSrcDBName() {
         /* List<String> js1 = new ArrayList<String>();
@@ -112,18 +123,19 @@ public class CopyController {
             js1 = copyService.getValues("DCT_DBNAMES");
             return ResponseEntity.status(HttpStatus.OK).body(js1);
         } catch (Exception e) {
+            logger.error(e.getMessage(),e.getStackTrace());
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-
-    @GetMapping(value="/getSchName", produces = "application/json")
-    public ResponseEntity<List<String>> getAllDBSchemas(){
+    @GetMapping(value = "/getSchName", produces = "application/json")
+    public ResponseEntity<List<String>> getAllDBSchemas() {
         List<String> schemaList = new ArrayList<String>();
         try {
             schemaList = copyService.getValues("DCT_SCHEMAS");
             return ResponseEntity.status(HttpStatus.OK).body(schemaList);
         } catch (Exception e) {
+            logger.error(e.getMessage(),e.getStackTrace());
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
        /*  List<String> schemaList = new ArrayList<String>();
@@ -137,48 +149,49 @@ public class CopyController {
         } */
     }
 
-    @GetMapping(value="/getTabName", produces = "application/json")
-    public ResponseEntity<List<String>> getAllTables(){
-        List<String> tabList = new ArrayList<String>();
-        /*
-        try{
+    @GetMapping(value = "/getTabName", produces = "application/json")
+    public ResponseEntity<List<String>> getAllTables() {
+        List<String> tabList = new ArrayList<String>();        
+        try {
             Statement st = conFromDb.createStatement();
-            ResultSet rs = st.executeQuery("select table_name from all_tables where owner='"+user.toUpperCase()+"'");
-            while(rs.next()){
+            ResultSet rs = st.executeQuery("select table_name from all_tables where owner='" + fromUser.toUpperCase() + "'");
+            while (rs.next()) {
                 tabList.add(rs.getString(1));
             }
             return ResponseEntity.status(HttpStatus.OK).body(tabList);
-        }catch(Exception e){
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e.getStackTrace());
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         
-        */
-        try{
+       
+        /* try{
             tabList.add("Customers");
             tabList.add("Trades");
             tabList.add("Job_Details");
             tabList.add("Transactions");
             tabList.add("Trades_10m");
-            return ResponseEntity.status(HttpStatus.OK).body(tabList);
-        }catch(Exception e){
-            return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @GetMapping(value="/getTabName/{usr}", produces = "application/json")
-    public ResponseEntity<List<String>> getAllTables(@PathVariable("usr") String usr){
-        List<String> tabList = new ArrayList<String>();
-       /* try{
-            Statement st = conFromDb.createStatement();
-            ResultSet rs = st.executeQuery("select table_name from all_tables where owner='"+usr.toUpperCase()+"'");
-            while(rs.next()){
-                tabList.add(rs.getString(1));
-            }
             return ResponseEntity.status(HttpStatus.OK).body(tabList);
         }catch(Exception e){
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
         } */
-        try{
+    }
+
+    @GetMapping(value = "/getTabName/{usr}", produces = "application/json")
+    public ResponseEntity<List<String>> getAllTables(@PathVariable("usr") String usr) {
+        List<String> tabList = new ArrayList<String>();
+        try {
+            Statement st = connThrough.createStatement();
+            ResultSet rs = st.executeQuery("select table_name from all_tables where owner='" + usr.toUpperCase() + "'");
+            while (rs.next()) {
+                tabList.add(rs.getString(1));
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(tabList);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e.getStackTrace());
+            return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+  /*       try{
             tabList.add("Customers");
             tabList.add("Trades");
             tabList.add("Job_Details");
@@ -187,13 +200,24 @@ public class CopyController {
             return ResponseEntity.status(HttpStatus.OK).body(tabList);
         }catch(Exception e){
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        } */
     }
 
-    @RequestMapping(value="/getPartName/{table}", method = RequestMethod.GET)
+    @RequestMapping(value = "/getPartName/{table}", method = RequestMethod.GET)
 	public ResponseEntity<List<String>> getAllParts(@PathVariable("table") String table) {
-		List<String> partList = new ArrayList<String>();
-        try{
+        List<String> partList = new ArrayList<String>();
+        try {
+            Statement st = conFromDb.createStatement();
+            ResultSet rs = st.executeQuery("select distinct partition_name from all_tab_partitions where table_name='" + table.toUpperCase() + "' and table_owner='" + fromUser.toUpperCase() + "'");
+            while (rs.next()) {
+                partList.add(rs.getString(1));
+            }
+            return ResponseEntity.status(HttpStatus.OK).body(partList);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e.getStackTrace());
+            return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        /* try{
             partList.add(table.toString() + "P1");
             partList.add(table.toString() + "P2");
             partList.add(table.toString() + "P3");
@@ -202,27 +226,31 @@ public class CopyController {
             return ResponseEntity.status(HttpStatus.OK).body(partList);
         }catch(Exception e){
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        } */
 
-        /*
-        try{
+        
+    }
+    @RequestMapping(value = "/getSubPartName/{table}/{partitionName}", method = RequestMethod.GET)
+    public ResponseEntity<List<String>> getAllSubParts(@PathVariable("table") String table, @PathVariable("partitionName") String partitionName) {
+        List<String> subPartList = new ArrayList<String>();
+        try {
             Statement st = conFromDb.createStatement();
-            ResultSet rs = st.executeQuery("select distinct partition_name from all_tab_partitions where table_name='"+table.toUpperCase()+"' and table_owner='"+user.toUpperCase()+"'");
-            while(rs.next()){
-                partList.add(rs.getString(1));
+            ResultSet rs = st.executeQuery("select distinct subpartition_name from all_tab_subpartitions where table_name='" + table.toUpperCase() + "' and table_owner='" + fromUser.toUpperCase() +"' and partition_NAME='" + partitionName.toUpperCase() + "'");
+            while (rs.next()) {
+                subPartList.add(rs.getString(1));
             }
-            return ResponseEntity.status(HttpStatus.OK).body(partList);
-        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.OK).body(subPartList);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e.getStackTrace());
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-         */
-	}
-
+    }
+   
     @RequestMapping(value = "/authDB", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> authDB(@RequestParam("usr") String user, @RequestParam("pass") String pass,
-                                        @RequestParam("dbn") String dbn, @RequestParam("DbType") String dbType){
-        try{
+                                        @RequestParam("dbn") String dbn, @RequestParam("DbType") String dbType)  throws SQLException {
+       /*  try{
             //The check DB  Authentication here.
             
             if(user.isEmpty() || pass.isEmpty() || dbn.isEmpty()){
@@ -236,123 +264,195 @@ public class CopyController {
             return ResponseEntity.status(HttpStatus.OK).body(ExceptionUtils.getStackTrace(e));
         }
         System.out.println("DB Authentication!" + user + " " + pass + " " + dbn + " " +  (user + "123"));
-
-        /*
+ */
+        
         try {
-            String url = "jdbc:oracle:thin:@localhost:1521:"+dbn;
+            String url = "jdbc:oracle:thin:@localhost:1521:" + dbn;
             List<String> tableNamesList = null;
             Class.forName("oracle.jdbc.driver.OracleDriver");
             DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
-            if(dbType.equalsIgnoreCase("source")){
-                conFromDb = DriverManager.getConnection(url,user,pass);
-            }else if(dbType.equalsIgnoreCase("target")){
-                conToDb = DriverManager.getConnection(url,user,pass);
+            if (dbType.equalsIgnoreCase("source")) {
+                fromUser = user;
+                conFromDb = DriverManager.getConnection(url, user, pass);
+                Statement st = conFromDb.createStatement();
+                ResultSet rs = st.executeQuery("select ora_database_name from dual");
+                while (rs.next()) {
+                    fromSid=rs.getString(1);
+                }
+            } else if (dbType.equalsIgnoreCase("target")) {
+                conToDb = DriverManager.getConnection(url, user, pass);
+                Statement st = conFromDb.createStatement();
+                ResultSet rs = st.executeQuery("select ora_database_name from dual");
+                while (rs.next()) {
+                    toSid=rs.getString(1);
+                }
+            } else if (dbType.equalsIgnoreCase("user")) {
+                connectThroughDb = dbn;
+                connThrough = DriverManager.getConnection(url, user, pass);
+                connThroughUser = user.substring(user.indexOf("[") + 1).split("]")[0];
             }
             System.out.println("DB Authentication!" + user + " " + pass + " " + dbn);
             return ResponseEntity.status(HttpStatus.OK).body("true");
         } catch (Exception e) {
+            logger.error(e.getMessage(),e.getStackTrace());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ExceptionUtils.getStackTrace(e));
         }
-        */
-        return ResponseEntity.status(HttpStatus.OK).body("false");
     }    
-    @RequestMapping(value="/getAllGrantSchemaList", method = RequestMethod.GET)
+    
+    @RequestMapping(value = "/getAllGrantSchemaList", method = RequestMethod.GET)
     public ResponseEntity<List<String>> getAllGrantSchemaList() {
         List<String> grantedSchemaList = new ArrayList<String>();
-       /* try{
-            Statement st = conFromDb.createStatement();
-            ResultSet rs = st.executeQuery("select distinct grantor from all_tab_privs where grantee='"+fromUser.toUpperCase()+"'");
-            while(rs.next()){
-                grantedSchemaList.add(rs.getString(1));
+        try {
+            Statement st = connThrough.createStatement();
+            ResultSet rs = st.executeQuery("select distinct grantor from all_tab_privs where grantee='" + connThroughUser.toUpperCase() + "'");            
+            grantedSchemaList.add(connThroughUser.toUpperCase());
+            while (rs.next()) {    
+            grantedSchemaList.add(rs.getString(1));
             }
             return ResponseEntity.status(HttpStatus.OK).body(grantedSchemaList);
-        }catch(Exception e){
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e.getStackTrace());
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-*/
-        try{
+
+       /*  try{
             grantedSchemaList.add("TRD1");
             grantedSchemaList.add("COVID1");
             grantedSchemaList.add("HACK1");
             return ResponseEntity.status(HttpStatus.OK).body(grantedSchemaList);
         }catch(Exception e){
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        } */
     }
     
-    @GetMapping(value="/getColumnName/{usr}/{table}", produces = "application/json")
+    @GetMapping(value = "/getColumnName/{usr}/{table}", produces = "application/json")
     public ResponseEntity<List<String>> getAllColumns(@PathVariable("usr") String usr, @PathVariable("table") String table) {
         List<String> columnList = new ArrayList<String>();
-        /*try{
-            Statement st = conFromDb.createStatement();
-            ResultSet rs = st.executeQuery("SELECT column_name FROM all_tab_cols WHERE owner ='"+usr.toUpperCase()+"' and table_name = '"+table.toUpperCase()+"'");
-            while(rs.next()){
+        try {
+            Statement st = connThrough.createStatement();
+            ResultSet rs = st.executeQuery("SELECT column_name FROM all_tab_cols WHERE owner ='" + usr.toUpperCase() + "' and table_name = '" + table.toUpperCase() + "'");
+            while (rs.next()) {
                 columnList.add(rs.getString(1));
             }
             return ResponseEntity.status(HttpStatus.OK).body(columnList);
-        }catch(Exception e){
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e.getStackTrace());
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-        }*/
-        try{
+        }
+       /*  try{
             columnList.add("COL1");
             columnList.add("COL2");
             columnList.add("COL3");
             return ResponseEntity.status(HttpStatus.OK).body(columnList);
         }catch(Exception e){
             return (ResponseEntity<List<String>>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        } */
 
     }
 
     @RequestMapping(value = "/createSyntheticData", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<String> createSyntheticData(@RequestBody String jsonString ){
+    public ResponseEntity<String> createSyntheticData(@RequestBody String jsonString) {
         System.out.println("Entered createSyntheticData");
-        List<SyntheticCriteria> syntheticCriteria = new ArrayList<SyntheticCriteria>();
-        List<SyntheticJoins> syntheticJoins = new ArrayList<SyntheticJoins>();
-
-        try{
+        logger.info("Entered createSyntheticData");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now;
+        now = LocalDateTime.now();
+        System.out.println("Start time - " + dtf.format(now));
+        List<SyntheticCriteria> syntheticCriteriaList = new ArrayList<SyntheticCriteria>();
+        List<SyntheticJoins> syntheticJoinsList = new ArrayList<SyntheticJoins>();
+        OracleCallableStatement callStmt = null;
+        STRUCT structProject1;
+        int count1 = 0, count2 = 0;
+        try {
+            callStmt = (OracleCallableStatement) connThrough.prepareCall("{call create_syn_data(?,?)}");
+            int jobId = copyService.writeToFile(connectThroughDb, connThroughUser, "NA", "NA", "NA", "SDC");
              ObjectMapper objectMapper = new ObjectMapper();
              ObjectMapper objectMapper2 = new ObjectMapper();
-             objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-             
+             objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);             
              JsonNode rootNode = objectMapper.readTree(jsonString);
              JsonNode dataWrapNode = rootNode.path("SyntheticDataWrapper");
              JsonNode synJoinNode = dataWrapNode.path("SyntheticJoins");
              Iterator<JsonNode> elements = synJoinNode.elements();
-                while(elements.hasNext()){
+             while (elements.hasNext()) {
                     JsonNode synJoin = elements.next();             
                     SyntheticJoins sj = objectMapper2.readValue(synJoin.toString(), SyntheticJoins.class);
-                    syntheticJoins.add(sj);
-                }
-             
+                    syntheticJoinsList.add(sj);
+            }
+            STRUCT[] structArrayOfProjects1 = new STRUCT[syntheticJoinsList.size()];
+            for(SyntheticJoins sj: syntheticJoinsList){
+                Object[] obj = new Object[]{sj.getSchema1(), sj.getTable1(), sj.getColumn1(), sj.isStatic1(), sj.getMaxCount1(),
+                        sj.getSchema2(), sj.getTable2(), sj.getColumn2(), sj.isStatic2(), sj.getMaxCount2()};
+                StructDescriptor projectTypeDesc = StructDescriptor.createDescriptor("SYNTHETIC_JOIN", connThrough);
+                structProject1 = new STRUCT(projectTypeDesc, connThrough, obj);
+                structArrayOfProjects1[count1] = structProject1;
+                count1++;
+            }             
              JsonNode synCriteriaNode = dataWrapNode.path("SyntheticCriteria");   
              Iterator<JsonNode> elements2 = synCriteriaNode.elements();             
-             while(elements2.hasNext()){
+             while (elements2.hasNext()) {
                     JsonNode synCr = elements2.next();
                     SyntheticCriteria sc = objectMapper2.readValue(synCr.toString(), SyntheticCriteria.class);
-                    syntheticCriteria.add(sc);
+                    syntheticCriteriaList.add(sc);
                 }
-          } catch (JsonParseException e) { e.printStackTrace();}
-          catch (JsonMappingException e) { e.printStackTrace(); }
-          catch (IOException e) { e.printStackTrace(); }
-    
-          try{
-            
-            for (SyntheticJoins synJ : syntheticJoins) {
-                System.out.println(synJ.toString() ); 
-            }
-                        
-            for(SyntheticCriteria synC : syntheticCriteria) {
-                System.out.println(synC.toString());
-            }
-          } catch(Exception e){
-            System.out.println(e.getStackTrace());
-          }
-            
-        return ResponseEntity.status(HttpStatus.OK).body("true");
+                STRUCT[] structArrayOfProjects2 = new STRUCT[syntheticCriteriaList.size()];
+                for(SyntheticCriteria sc: syntheticCriteriaList){
+                    Object[] obj = new Object[]{sc.getSchema(), sc.getTable(), sc.getColumn(), sc.getCondition(), sc.getValue()};
+                    StructDescriptor projectTypeDesc = StructDescriptor.createDescriptor("SYNTHETIC_CRITERIA", connThrough);
+                    structProject1 = new STRUCT(projectTypeDesc, connThrough, obj);
+                    structArrayOfProjects2[count2] = structProject1;
+                    count2++;
+                }
+               /*  for (SyntheticJoins synJ : syntheticJoinsList) {
+                    System.out.println(synJ.toString());
+                }
+                for (SyntheticCriteria synC : syntheticCriteriaList) {
+                    System.out.println(synC.toString());
+                } */
+                ArrayDescriptor projectTypeArrayDesc1 = ArrayDescriptor.createDescriptor("SYNJOINARR", connThrough);
+                ArrayDescriptor projectTypeArrayDesc2 = ArrayDescriptor.createDescriptor("SYNCRIARR", connThrough);
+                ARRAY arrayOfProjects1 = new ARRAY(projectTypeArrayDesc1, connThrough, structArrayOfProjects1);
+                ARRAY arrayOfProjects2 = new ARRAY(projectTypeArrayDesc2, connThrough, structArrayOfProjects2);
+                callStmt.setARRAY(1, arrayOfProjects1);
+                callStmt.setARRAY(2, arrayOfProjects2);
+                callStmt.execute();
+                now = LocalDateTime.now();
+                System.out.println("End time - " + dtf.format(now));
+                logger.info("End time - " + dtf.format(now));
+                copyService.updateFileStatus(jobId, "Completed");
+                return ResponseEntity.status(HttpStatus.OK).body("true");
+            } catch (Exception e) {
+                logger.error(e.getMessage(),e.getStackTrace());
+                return (ResponseEntity<String>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+            }           
+        //return ResponseEntity.status(HttpStatus.OK).body("true");
     }
-
+    
+    @RequestMapping(value = "/createSyntheticDataStr", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<String> createSyntheticDataStr(@RequestBody String jsonString) {
+        System.out.println("Entered createSyntheticData");
+        logger.info("Entered createSyntheticData");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now;
+        now = LocalDateTime.now();
+        System.out.println("Start time - " + dtf.format(now));
+        OracleCallableStatement callStmt = null;
+        try {
+            callStmt = (OracleCallableStatement) connThrough.prepareCall("{call create_syn_data_single_str(?)}");
+            int jobId = copyService.writeToFile(connectThroughDb, connThroughUser, "NA", "NA", "NA", "SDC");
+            callStmt.setString(1, jsonString);
+            callStmt.execute();
+            now = LocalDateTime.now();
+            System.out.println("End time - " + dtf.format(now));
+            logger.info("End time - " + dtf.format(now));
+            copyService.updateFileStatus(jobId, "Completed");
+            return ResponseEntity.status(HttpStatus.OK).body("true");
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e.getStackTrace());
+            return (ResponseEntity<String>) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
     //schemas for connect through user
