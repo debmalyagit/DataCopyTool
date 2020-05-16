@@ -47,7 +47,7 @@ public class CopyController {
     Connection conFromDb, conToDb, connThrough;
     String fromUser, connThroughUser, connectThroughDb, fromSid, toSid;
 
-    String dctPath = System.getenv("DCT_HOME");
+    String dctPath = System.getenv("DCT_HOME") + "\\Files\\";
   
     @Autowired
     CopyService copyService;

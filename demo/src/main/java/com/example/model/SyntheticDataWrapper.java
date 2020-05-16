@@ -5,12 +5,13 @@ import java.util.List;
 public class SyntheticDataWrapper {
         List<SyntheticJoins> syntheticJoins ;
         List<SyntheticCriteria> syntheticCriteria;
-
+        int synDataCreationCount;
 
         public SyntheticDataWrapper(){}
-        public SyntheticDataWrapper(List<SyntheticJoins> synjn, List<SyntheticCriteria> syncr){
+        public SyntheticDataWrapper(List<SyntheticJoins> synjn, List<SyntheticCriteria> syncr,int synCount ){
             this.syntheticJoins = synjn;
             this.syntheticCriteria = syncr;
+            this.synDataCreationCount = synCount;
         }
         public List<SyntheticJoins> getSyntheticJoins() {
             return syntheticJoins;
@@ -26,6 +27,14 @@ public class SyntheticDataWrapper {
 
         public void setSyntheticCriteria(List<SyntheticCriteria> syntheticCriteria) {
             this.syntheticCriteria = syntheticCriteria;
+        }
+
+        public int getSynDataCreationCount() {
+            return synDataCreationCount;
+        }
+
+        public void setSynDataCreationCount(int synDataCreationCount) {
+            this.synDataCreationCount = synDataCreationCount;
         }
 
 }
