@@ -6,6 +6,7 @@ var gfPWD;
 var gfDB;
 var gtSName;
 var gtPWD;
+var gremID = 0;
 var gtDB;
 var gOpenJoin=false;
 var gOpenFilter=false;
@@ -496,11 +497,16 @@ $(document).ready(function(){
             $(document).ready(function(){
                 console.log("Checking : " + vBtId);
                 $('.btn-remove').click(function(){
-                    console.log("Checking : " + vBtId);
-                    if(!gJoinFreezed){
-                        $(this).closest('tr').remove();
+                    console.log("Checking : " + vBtId);                    
+                 //   if(!gJoinFreezed){
+                        
+                        console.log("button ID: " + $(this).closest('tr').parent().attr('id'));
+                        if($(this).closest('tr').parent().attr('id') == "SynJoinTab-body" && gJoinFreezed == false){
+                            $(this).closest('tr').remove();                                                    
+                        }
                         checkTableRows();
-                    }
+                        
+                   // }
                     
                 });
 
@@ -546,6 +552,9 @@ $(document).ready(function(){
             console.log(value1 + " " + value1.length );
         });
         gJoinFreezed = true;
+        if(gJoinFreezed){
+            console.log("gJoinFreezed is now true!");
+        }
 
         $('#SynFreezJSubmit').hide();
     });
@@ -639,11 +648,15 @@ $(document).ready(function(){
         $(document).ready(function(){
             console.log("Checking : " );
             $('.btn-remove').click(function(){
-                console.log("Checking : " );
-                if(!gSCFreezed){
-                    $(this).closest('tr').remove();
+                
+               // if(!gSCFreezed){
+                    console.log("button SynID: " + $(this).closest('tr').parent().attr('id'));                    
+                    if($(this).closest('tr').parent().attr('id') == "SynFilterTab-body" && gSCFreezed == false){
+                        $(this).closest('tr').remove();                        
+                    }
                     checkTableRows();
-                }                
+                    
+                //}                
             });
         });
 
@@ -665,15 +678,15 @@ $(document).ready(function(){
             $('#SynRow'+l).show();
         }
         gSCFreezed = true;
+        if(gSCFreezed){
+            console.log("gSCFreezed is now true!");
+        }
         $('#SynFreezeFCSubmit').hide();
 
 
     });
 
-    $('#SynFinalSubmit').click(function(){
-        if(!confirm("This will finally send the request for synthetic data generation. Are you sure?")){
-            return false;            
-        }
+    $('#SynFinalSubmit').click(function(){       
         var finalJoinsArr = [];
         
         var finalSynArr = [];
@@ -721,8 +734,22 @@ $(document).ready(function(){
         console.log(finalSynArr);
         var syntheticCriteria = JSON.stringify(finalSynArr);
         console.log(syntheticCriteria);
-        var finalData = '{"SyntheticDataWrapper":{"SyntheticJoins":' + syntheticJoins + ',"SyntheticCriteria": ' + syntheticCriteria + '}}';
+
+        var synCount = prompt("How many rows of Synthetic data to be created?","5");
+
+        if ( synCount == "" || synCount == undefined || synCount <= 0){
+            alert("Synthetic data count is not provided. Please try again!");
+            return false;
+        }
+        if (! $.isNumeric(synCount)){
+            alert("Sorry! We expect only numeric value as number of rows for Sythetic data to be created!");
+            return false;
+        }
+        var finalData = '{"SyntheticDataWrapper":{"SyntheticJoins":' + syntheticJoins + ',"SyntheticCriteria": ' + syntheticCriteria + ',"synDataCreationCount": ' + synCount + '}}';
         console.log(finalData);
+        if(!confirm("This will finally send the request for synthetic data generation. Are you sure?")){
+            return false;            
+        }
         $.ajax({
             type: 'POST',
             url: '/createSyntheticData',
@@ -1007,7 +1034,8 @@ function tableJoinTabOps(){
     console.log(rowCnt + " Row Count");
     row = table.insertRow(rowCnt);
     rremove = row.insertCell(0);
-    BtId = "SynRemoveRel"+ rowCnt;
+    BtId = "SynRemoveRel"+ gremID;
+    gremID += 1;
     rremove.innerHTML = "<button type=\"button\" id=\" "+ BtId + "\"  class=\"btn btn-primary btn-sm btn-remove\">Remove</button>";
 
 
@@ -1020,11 +1048,14 @@ function tableJoinTabOps(){
     var rfStatic = row.insertCell(4);
     if($('#SynStaticf').is(':checked')){
         rfStatic.innerHTML = "true";
+        $('#SynStaticf').prop("checked",false);
     } else {
         rfStatic.innerHTML = "false";
     }
     var rfMCount = row.insertCell(5);
     rfMCount.innerHTML = $('#SynMRf').val();
+    $('#SynMRf').val("");
+    $('#SynMRf').prop('disabled',false);
 
     var rJschema = row.insertCell(6);
     rJschema.innerHTML = $('#SynSchName2 option:selected').text();
@@ -1035,12 +1066,15 @@ function tableJoinTabOps(){
     var rStatic = row.insertCell(9);
     if($('#SynStatic').is(':checked')){
         rStatic.innerHTML = "true";
+        $('#SynStatic').prop("checked",false);
     } else {
         rStatic.innerHTML = "false";
     }
 
     var rMCount = row.insertCell(10);
     rMCount.innerHTML = $('#SynMR').val();
+    $('#SynMR').val("");
+    $('#SynMR').prop('disabled',false);
 
     return BtId;
 
@@ -1060,7 +1094,8 @@ function tableFilterTabOps(){
 
     row = table.insertRow(rowCnt);
     rremove = row.insertCell(0);
-    rremove.innerHTML = "<button type=\"button\" id=\"SynRemoveFilter"+ rowCnt +"\"  class=\"btn btn-primary btn-sm btn-remove\">Remove</button>";
+    rremove.innerHTML = "<button type=\"button\" id=\"SynRemoveFilter"+ gremID +"\"  class=\"btn btn-primary btn-sm btn-remove\">Remove</button>";
+    gremID += 1;
     var rschema = row.insertCell(1);
     rschema.innerHTML = $('#SynSchFltName option:selected').text();
     var rtable = row.insertCell(2);
@@ -1144,3 +1179,28 @@ function synReset(){
 
     return true;
 }
+
+function handleClick(cb){
+    var checkBox = document.getElementById("SynStaticf");
+    var text = document.getElementById("text");
+    if (checkBox.checked == true){
+      $('#SynMRf').val(1);
+      $('#SynMRf').prop('disabled',true);
+    } else {
+      $('#SynMRf').val('');
+      $('#SynMRf').prop('disabled',false);
+    }
+  }
+  
+  function relatedHandleClick(cb){
+    var checkBox = document.getElementById("SynStatic");
+    var text = document.getElementById("text");
+    if (checkBox.checked == true){
+      $('#SynMR').val(1);
+      $('#SynMR').prop('disabled',true);
+    } else {
+      $('#SynMR').val('');
+      $('#SynMR').prop('disabled',false);
+    }
+  }
+

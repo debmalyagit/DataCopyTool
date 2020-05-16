@@ -358,7 +358,7 @@
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <div class="input-group-text">
-                  <input type="checkbox" id="SynStaticf" aria-label="Checkbox for following text input">
+                  <input type="checkbox" id="SynStaticf" aria-label="Checkbox for following text input" onclick='handleClick(this);'>
                 </div>
               </div>
               <span class="input-group-text" id="inputGroup-sizing-default">Static ?</span>
@@ -411,7 +411,7 @@
             <div class="input-group mb-3">
               <div class="input-group-prepend">
                 <div class="input-group-text">
-                  <input type="checkbox" id="SynStatic" aria-label="Checkbox for following text input">
+                  <input type="checkbox" id="SynStatic" aria-label="Checkbox for following text input" onclick='relatedHandleClick(this);'>
                 </div>
               </div>
               <span class="input-group-text" id="inputGroup-sizing-default">Static ?</span>
